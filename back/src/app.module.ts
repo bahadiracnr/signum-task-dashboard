@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TaskModule } from './tasks/task.module';
+import { ConfigModule } from '@nestjs/config';
+import { Neo4jModule } from './neo4j/neo4j.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), Neo4jModule, TaskModule],
 })
 export class AppModule {}
