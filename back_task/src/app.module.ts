@@ -4,6 +4,7 @@ import { Neo4jModule } from 'nest-neo4j';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { TaskModule } from './task/task.module';
+import { MigrationService } from './migration/magration.service';
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { TaskModule } from './task/task.module';
     TaskModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MigrationService],
 })
 export class AppModule {}
