@@ -9,22 +9,22 @@ import {
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 
-@Controller('tasks')
+@Controller('task')
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(private readonly TaskService: TaskService) {}
 
   @Post()
-  create(@Body() body: Record<string, any>) {
-    return this.taskService.createTask(body);
+  createTask(@Body() body: Record<string, any>) {
+    return this.TaskService.createTask(body);
   }
 
   @Get()
-  getAllTasks() {
-    return this.taskService.getAllTasks();
+  getAllTask() {
+    return this.TaskService.getAllTask();
   }
   @Get(':taskNo')
   getTask(@Param('taskNo') taskNo: string) {
-    return this.taskService.getTask(taskNo);
+    return this.TaskService.getTask(taskNo);
   }
 
   @Put(':taskNo')
@@ -32,11 +32,11 @@ export class TaskController {
     @Param('taskNo') taskNo: string,
     @Body() body: Record<string, any>,
   ) {
-    return this.taskService.updateTask(taskNo, body);
+    return this.TaskService.updateTask(taskNo, body);
   }
 
   @Delete(':taskNo')
   deleteTask(@Param('taskNo') taskNo: string) {
-    return this.taskService.deleteTask(taskNo);
+    return this.TaskService.deleteTask(taskNo);
   }
 }

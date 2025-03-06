@@ -14,7 +14,7 @@ export class StructureController {
   constructor(private readonly structureService: StructureService) {}
 
   @Post()
-  create(@Body() body: Record<string, any>) {
+  createStructure(@Body() body: Record<string, any>) {
     return this.structureService.createStructure(body);
   }
 

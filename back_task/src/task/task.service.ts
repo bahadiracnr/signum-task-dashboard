@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Neo4jService } from '../neo4j/neo4j.service';
 import { Task } from './task.entity';
+import { Neo4jService } from 'nest-neo4j/dist';
 
 @Injectable()
 export class TaskService {
@@ -8,7 +8,7 @@ export class TaskService {
 
   async createTask(data: Record<string, any>): Promise<Task> {
     const query = `
-            CREATE (t:Task {taskNo: $taskNo, locationNo: $locationNo, status: $status})
+            CREATE (t:Task {taskNo: $taskNo, taskLocation: $taskLocation, taskStatus: $taskStatus})
             RETURN t
         `;
     const result = await this.neo4jService.write(query, data);
@@ -52,7 +52,7 @@ export class TaskService {
     return node.properties;
   }
 
-  async getAllTasks(): Promise<Task[]> {
+  async getAllTask(): Promise<Task[]> {
     const query = `
         MATCH (t:Task)
         RETURN t
@@ -60,7 +60,7 @@ export class TaskService {
     const result = await this.neo4jService.read(query);
 
     return result.records.map((record) => {
-      const node = record.get('t') as { properties: Task }; // Neo4j node tipini zorluyoruz
+      const node = record.get('t') as { properties: Task };
       return node.properties;
     });
   }

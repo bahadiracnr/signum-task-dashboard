@@ -1,9 +1,24 @@
 import { Module } from '@nestjs/common';
-import { TaskModule } from './tasks/task.module';
+import { AppService } from './app.service';
+import { Neo4jModule } from 'nest-neo4j';
 import { ConfigModule } from '@nestjs/config';
-import { Neo4jModule } from './neo4j/neo4j.module';
+import { AppController } from './app.controller';
+import { TaskModule } from './task/task.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), Neo4jModule, TaskModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    Neo4jModule.forRoot({
+      scheme: 'bolt',
+      host: 'localhost',
+      port: 7687,
+      username: 'neo4j',
+      password: 'Kjhgfdsa',
+      database: 'task',
+    }),
+    TaskModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
