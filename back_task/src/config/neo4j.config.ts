@@ -4,5 +4,5 @@ export const neo4jConfig = {
   port: 7687,
   username: 'neo4j',
   password: 'Kjhgfdsa',
-  database: 'projectone',
+  database: 'task',
 };
