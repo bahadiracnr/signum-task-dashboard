@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { StructureService } from './structure.service';
 import { StructureController } from './structure.controller';
-import { FloorModule } from 'src/floor/floor.module';
+import { BuildModule } from 'src/buildi/build.module';
 
 @Module({
-  imports: [FloorModule],
+  imports: [BuildModule],
   controllers: [StructureController],
   providers: [StructureService],
 })
