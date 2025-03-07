@@ -1,0 +1,14 @@
+This is the CLI version of [neo4j-migrations][1].
+
+Use
+
+    ./bin/neo4j-migrations -h
+    
+Example:
+
+./bin/neo4j-migrations --schema-database <SCHEMA_DB> \
+ --database <TARGET_DB> \
+  -a<PROTOCOL>://<IP>:<PORT> \ 
+  -u<USER> \
+  -p<PASSWORD> \
+  apply

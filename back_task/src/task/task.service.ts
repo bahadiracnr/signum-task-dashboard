@@ -6,24 +6,38 @@ import { Neo4jService } from 'nest-neo4j/dist';
 export class TaskService {
   constructor(private readonly neo4jService: Neo4jService) {}
 
-  async createTask(data: Record<string, undefined>): Promise<Task> {
+  // async createTask(data: Record<string, undefined>): Promise<Task> {
+  //   const query = `
+  //       MATCH (tasks:Tasks)<-[:HAS_TASKS]-(p:Project {name: $Tasks})
+  //       CREATE (tasks)-[:HAS_TASK]->(t:Task {
+  //           taskNo: $taskNo,
+  //           taskLocation: $taskLocation,
+  //           taskStatus: $taskStatus
+  //       })
+  //       RETURN t
+  //   `;
+
+  //   const result = await this.neo4jService.write(query, {
+  //     projectName: 'MyProject',
+  //     taskNo: data.taskNo,
+  //     taskLocation: data.taskLocation,
+  //     taskStatus: data.taskStatus,
+  //   });
+
+  //   const node = result.records[0].get('t') as { properties: Task };
+  //   const properties = node.properties;
+  //   return properties;
+  // }
+
+  async createTask(data: Record<string, any>): Promise<Task> {
     const query = `
-        MATCH (tasks:Tasks)<-[:HAS_TASKS]-(p:Project {name: $projectName})
-        CREATE (tasks)-[:HAS_TASK]->(t:Task {
-            taskNo: $taskNo,
-            taskLocation: $taskLocation,
-            taskStatus: $taskStatus
-        })
+
+ MATCH (tasks:Tasks)  // Zaten var olan Tasks node'unu bul
+        CREATE (t:Task {taskNo: $taskNo, taskLocation: $taskLocation, taskStatus: $taskStatus})
+        CREATE (tasks)-[:HAS_TASK]->(t)  // Yeni task'ı bu node'a bağla
         RETURN t
-    `;
-
-    const result = await this.neo4jService.write(query, {
-      projectName: 'MyProject',
-      taskNo: data.taskNo,
-      taskLocation: data.taskLocation,
-      taskStatus: data.taskStatus,
-    });
-
+        `;
+    const result = await this.neo4jService.write(query, data);
     const node = result.records[0].get('t') as { properties: Task };
     const properties = node.properties;
     return properties;
