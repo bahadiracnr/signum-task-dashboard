@@ -9,10 +9,10 @@ export class StructureService {
   async createStructure(data: Record<string, any>): Promise<Structure> {
     const query = `
 
-             MATCH (Strucutres:Strucutres)  // Zaten var olan Tasks node'unu bul
-         CREATE (t:Strucutres {structureNo: $structureNo, structureName: $structureName})
-        CREATE (Strucutres)-[:HAS_STRUCUTRES]->(t)  // Yeni task'ı bu node'a bağla
-        RETURN t
+             MATCH (s:Strucutres {name: "Strucutres"})  // Mevcut "structure" düğümünü eşle
+CREATE (t:Strucutres {structureNo: $structureNo, structureName: $structureName})
+CREATE (s)-[:HAS_STRUCUTRES]->(t)  // Yeni düğümü sadece "structure" düğümüne bağla
+RETURN t
         `;
     const result = await this.neo4jService.write(query, data);
     const node = result.records[0].get('t') as { properties: Structure };

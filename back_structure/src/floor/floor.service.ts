@@ -10,10 +10,11 @@ export class FloorService {
     const query = `
 
 
-             MATCH (Floor:Floor)  // Zaten var olan Tasks node'unu bul
-         CREATE (t:Floor {FloorNo: $FloorNo, FloorName: $FloorName})
-        CREATE (Floor)-[:HAS_FLOOR]->(t)  // Yeni task'ı bu node'a bağla
-        RETURN t
+
+        MATCH (s:Floor {name: "Floor"}) 
+CREATE (t:Floor {FloorNo: $FloorNo, FloorName: $FloorName})
+CREATE (s)-[:HAS_FLOOR]->(t) 
+RETURN t
 
         
         `;

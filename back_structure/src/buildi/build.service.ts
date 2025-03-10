@@ -9,10 +9,16 @@ export class BuildService {
   async createBuild(data: Record<string, any>): Promise<Build> {
     const query = `
     
-                 MATCH (Build:Build)  // Zaten var olan Tasks node'unu bul
-             CREATE (t:Build {BuildNo: $BuildNo, BuildName: $BuildName})
-            CREATE (Build)-[:HAS_BUILD]->(t)  // Yeni task'ı bu node'a bağla
-            RETURN t
+
+
+
+        MATCH (s:Build {name: "Build"}) 
+CREATE (t:Build {BuildNo: $BuildNo, BuildName: $BuildName})
+CREATE (s)-[:HAS_BUILD]->(t) 
+RETURN t
+
+
+            
             `;
     const result = await this.neo4jService.write(query, data);
     const node = result.records[0].get('t') as { properties: Build };

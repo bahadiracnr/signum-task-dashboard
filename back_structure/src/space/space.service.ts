@@ -8,11 +8,12 @@ export class SpaceService {
 
   async createSpace(data: Record<string, any>): Promise<Space> {
     const query = `
-    
-                 MATCH (Space:Space)  // Zaten var olan Tasks node'unu bul
-             CREATE (t:Space {SpaceNo: $SpaceNo, SpaceName: $SpaceName})
-            CREATE (Space)-[:HAS_SPACE]->(t)  // Yeni task'ı bu node'a bağla
-            RETURN t
+MATCH (s:Space {name: "Space"}) 
+CREATE (t:Space {SpaceNo: $SpaceNo, SpaceName: $SpaceName})
+CREATE (s)-[:HAS_SPACE]->(t) 
+RETURN t
+
+
             `;
     const result = await this.neo4jService.write(query, data);
     const node = result.records[0].get('t') as { properties: Space };
