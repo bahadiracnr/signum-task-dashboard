@@ -1,5 +1,5 @@
 {
-  "name": "back",
+  "name": "back_log",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -24,9 +24,10 @@
     "@nestjs/config": "^4.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/microservices": "^11.0.11",
+    "@nestjs/mongoose": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "kafkajs": "^2.2.4",
-    "nest-neo4j": "^0.3.1",
+    "mongoose": "^8.12.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

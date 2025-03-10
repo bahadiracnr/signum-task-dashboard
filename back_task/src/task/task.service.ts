@@ -8,18 +8,10 @@ export class TaskService {
 
   async createTask(data: Record<string, any>): Promise<Task> {
     const query = `
-
- 
-
-
-
-
  MATCH (s:Tasks {name: "Tasks"}) 
 CREATE (t:Tasks {TaskNo: $TaskNo, TaskLocation: $TaskLocation, TaskStatus: $TaskStatus})
 CREATE (s)-[:HAS_TASKS]->(t) 
 RETURN t
-
-
         `;
     const result = await this.neo4jService.write(query, data);
     const node = result.records[0].get('t') as { properties: Task };
