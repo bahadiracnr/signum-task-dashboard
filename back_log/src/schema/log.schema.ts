@@ -6,13 +6,13 @@ export type LogDocument = Log & Document;
 @Schema({ timestamps: true })
 export class Log {
   @Prop({ required: true })
-  service: string; // Hangi servis? (task, structure vs.)
+  service: string;
 
   @Prop({ required: true })
-  action: string; // Ne yapıldı? (create, update, delete vs.)
+  action: string;
 
   @Prop({ required: true, type: Object })
-  data: Record<string, any>; // Loglanan veri
+  data: Record<string, any>;
 }
 
 export const LogSchema = SchemaFactory.createForClass(Log);

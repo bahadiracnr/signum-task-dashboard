@@ -9,7 +9,7 @@ import { LogModule } from './log/log.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot('mongodb://localhost:27017/logs', {
-      dbName: 'logs', // Studio 3T'deki "logs" veritabanını kullan
+      dbName: 'logs',
     }),
     LogModule,
   ],
