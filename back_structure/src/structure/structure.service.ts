@@ -1,10 +1,31 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { Structure } from './structure.entity';
 import { Neo4jService } from 'nest-neo4j/dist';
+import { Kafka, Producer } from 'kafkajs';
 
 @Injectable()
-export class StructureService {
+export class StructureService implements OnModuleInit {
+  private kafka = new Kafka({
+    clientId: 'structure-service',
+    brokers: ['localhost:9092'],
+  });
+
+  private producer: Producer;
   constructor(private readonly neo4jService: Neo4jService) {}
+
+  async onModuleInit() {
+    this.producer = this.kafka.producer();
+    await this.producer.connect();
+  }
+
+  private async sendToKafka(action: string, data: Record<string, any>) {
+    await this.producer.send({
+      topic: 'logs',
+      messages: [
+        { value: JSON.stringify({ service: 'structure', action, data }) },
+      ],
+    });
+  }
 
   async createStructure(data: Record<string, any>): Promise<Structure> {
     const query = `
@@ -17,6 +38,7 @@ RETURN t
     const result = await this.neo4jService.write(query, data);
     const node = result.records[0].get('t') as { properties: Structure };
     const properties = node.properties;
+    await this.sendToKafka('create', properties);
     return properties;
   }
 
@@ -52,6 +74,7 @@ RETURN t
     const node = result.records[0].get('t') as {
       properties: Record<string, any>;
     };
+    await this.sendToKafka('update', { structureNo, ...data });
     return node.properties;
   }
 
@@ -63,7 +86,7 @@ RETURN t
     const result = await this.neo4jService.read(query);
 
     return result.records.map((record) => {
-      const node = record.get('t') as { properties: Structure }; // Neo4j node tipini zorluyoruz
+      const node = record.get('t') as { properties: Structure };
       return node.properties;
     });
   }
@@ -74,6 +97,7 @@ RETURN t
             DELETE t
         `;
     await this.neo4jService.write(query, { structureNo });
+    await this.sendToKafka('delete', { structureNo });
     return { message: 'Structure deleted' };
   }
 }
