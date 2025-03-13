@@ -29,13 +29,10 @@ export class BuildService implements OnModuleInit {
     const query = `
     
 
-
-
-        MATCH (s:Build {name: "Build"}) 
-CREATE (t:Build {BuildNo: $BuildNo, BuildName: $BuildName})
-CREATE (s)-[:HAS_BUILD]->(t) 
-RETURN t
-
+MATCH (s:Strucutres {name: "Strucutres"})  
+CREATE (b:Build {BuildNo: $BuildNo, BuildName: $BuildName})
+CREATE (s)-[:HAS_BUILD]->(b)  
+RETURN b
 
             
             `;

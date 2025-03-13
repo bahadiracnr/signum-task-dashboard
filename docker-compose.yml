@@ -1,86 +1,45 @@
 version: '3.8'
 
 services:
-  neo4j:
-    image: neo4j:latest
-    environment:
-      - NEO4J_AUTH=neo4j/password
+  task-service:
+    image: task-service:latest
+    build: ./task-service
     ports:
-      - '7474:7474'
-      - '7687:7687'
-    networks:
-      - app_network
+      - '3000:3000'
+    depends_on:
+      - kafka
+      - mongo
 
-  mongo:
-    image: mongo:latest
-    restart: always
+  structure-service:
+    image: structure-service:latest
+    build: ./structure-service
     ports:
-      - '27017:27017'
-    networks:
-      - app_network
+      - '4000:4000'
+    depends_on:
+      - kafka
+      - neo4j
+
+  log-service:
+    image: log-service:latest
+    build: ./log-service
+    ports:
+      - '5000:5000'
+    depends_on:
+      - kafka
+      - mongo
 
   kafka:
     image: bitnami/kafka:latest
     ports:
       - '9092:9092'
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://13.60.219.132:9092
-    depends_on:
-      - zookeeper
-    networks:
-      - app_network
 
-  zookeeper:
-    image: bitnami/zookeeper:latest
+  mongo:
+    image: mongo
     ports:
-      - '2181:2181'
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-    networks:
-      - app_network
+      - '27017:27017'
 
-  task-service:
-    build: ./task-service
-    depends_on:
-      - kafka
-      - mongo
-    environment:
-      - KAFKA_BROKER=13.60.219.132:9092
-      - MONGO_URI=mongodb://mongo:27017/logs
+  neo4j:
+    image: neo4j
     ports:
-      - '3001:3001'
-    networks:
-      - app_network
-
-  structure-service:
-    build: ./structure-service
-    depends_on:
-      - kafka
-      - mongo
-    environment:
-      - KAFKA_BROKER=13.60.219.132:9092
-      - MONGO_URI=mongodb://mongo:27017/logs
-    ports:
-      - '3002:3002'
-    networks:
-      - app_network
-
-  log-service:
-    build: ./log-service
-    depends_on:
-      - kafka
-      - mongo
-    environment:
-      - KAFKA_BROKER=13.60.219.132:9092
-      - MONGO_URI=mongodb://mongo:27017/logs
-    ports:
-      - '3000:3000'
-    networks:
-      - app_network
-
-networks:
-  app_network:
-    driver: bridge
+      - '7474:7474'
+      - '7687:7687'

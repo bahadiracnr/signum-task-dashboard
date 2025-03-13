@@ -28,9 +28,12 @@ export class SpaceService implements OnModuleInit {
 
   async createSpace(data: Record<string, any>): Promise<Space> {
     const query = `
-MATCH (s:Space {name: "Space"}) 
+
+
+
+    MATCH (fn:Floor {FloorNo: $FloorNo})
 CREATE (t:Space {SpaceNo: $SpaceNo, SpaceName: $SpaceName})
-CREATE (s)-[:HAS_SPACE]->(t) 
+CREATE (fn)-[:HAS_FLOOR]->(t) 
 RETURN t
 
 

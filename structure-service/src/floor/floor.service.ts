@@ -30,10 +30,11 @@ export class FloorService implements OnModuleInit {
 
 
 
-        MATCH (s:Floor {name: "Floor"}) 
+    MATCH (fn:Build {BuildNo: $BuildNo})
 CREATE (t:Floor {FloorNo: $FloorNo, FloorName: $FloorName})
-CREATE (s)-[:HAS_FLOOR]->(t) 
+CREATE (fn)-[:HAS_FLOOR]->(t) 
 RETURN t
+
 
         
         `;

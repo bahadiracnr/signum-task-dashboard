@@ -30,7 +30,7 @@ export class StructureService implements OnModuleInit {
   async createStructure(data: Record<string, any>): Promise<Structure> {
     const query = `
 
-             MATCH (s:Strucutres {name: "Strucutres"})  // Mevcut "structure" düğümünü eşle
+MATCH (s:Strucutres {name: "Strucutres"})  // Mevcut "structure" düğümünü eşle
 CREATE (t:Strucutres {structureNo: $structureNo, structureName: $structureName})
 CREATE (s)-[:HAS_STRUCUTRES]->(t)  // Yeni düğümü sadece "structure" düğümüne bağla
 RETURN t
