@@ -1,24 +1,51 @@
 version: '3.8'
 
 services:
+  task-service:
+    image: task-service:latest
+    build: ./task-service
+    ports:
+      - '3000:3000'
+    depends_on:
+      - kafka
+      - mongo
+
+  structure-service:
+    image: structure-service:latest
+    build: ./structure-service
+    ports:
+      - '4000:4000'
+    depends_on:
+      - kafka
+      - neo4j
+
   log-service:
     image: log-service:latest
-    build: .
+    build: ./log-service
     ports:
       - '5000:5000'
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/logs
-      - KAFKA_BROKER=localhost:9092
     depends_on:
-      - mongo
       - kafka
+      - mongo
+
+  front:
+    image: front:latest
+    build: ./front
+    ports:
+      - '6000:6000'
+
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - '9092:9092'
 
   mongo:
     image: mongo
     ports:
       - '27017:27017'
 
-  kafka:
-    image: bitnami/kafka:latest
+  neo4j:
+    image: neo4j
     ports:
-      - '9092:9092'
+      - '7474:7474'
+      - '7687:7687'
