@@ -27,7 +27,7 @@ export class TaskService implements OnModuleInit {
   async createTask(data: Record<string, any>): Promise<Task> {
     const query = `
  MATCH (s:Tasks {name: "Tasks"}) 
-CREATE (t:Tasks {TaskNo: $TaskNo, TaskLocation: $TaskLocation, TaskStatus: $TaskStatus})
+CREATE (t:Task {taskNo: $taskNo, taskLocation: $taskLocation, taskStatus: $taskStatus})
 CREATE (s)-[:HAS_TASKS]->(t) 
 RETURN t
         `;
