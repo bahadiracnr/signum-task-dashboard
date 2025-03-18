@@ -14,12 +14,12 @@ export default function App() {
         <div className="parent">
           <div className="div1">
             <Card className="cardHeight">
-              <NavLink to="/">
-                <List></List>
-              </NavLink>
-              <NavLink to="/tasks">
-                <Table></Table>
-              </NavLink>
+              <div>
+                <NavLink to="/">List</NavLink>
+              </div>
+              <div>
+                <NavLink to="/tasks">Table</NavLink>
+              </div>
             </Card>
           </div>
           <div className="div2">

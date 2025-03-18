@@ -37,7 +37,7 @@ RETURN b
             
             `;
     const result = await this.neo4jService.write(query, data);
-    const node = result.records[0].get('t') as { properties: Build };
+    const node = result.records[0].get('b') as { properties: Build };
     const properties = node.properties;
     await this.sendToKafka('create', properties);
     return properties;

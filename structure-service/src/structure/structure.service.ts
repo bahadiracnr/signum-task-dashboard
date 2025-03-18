@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { Structure } from './structure.entity';
 import { Neo4jService } from 'nest-neo4j/dist';
 import { Kafka, Producer } from 'kafkajs';
+import { StructureType } from 'src/enums/StrcutureType';
 
 @Injectable()
 export class StructureService implements OnModuleInit {
@@ -42,20 +43,76 @@ RETURN t
     return properties;
   }
 
-  async getStructure(structureNo: string) {
-    const query = `
-            MATCH (t:Structure {structureNo: $structureNo})
-            RETURN t
-        `;
-    const result = await this.neo4jService.read(query, { structureNo });
-    const node = result.records[0].get('t') as { properties: Structure };
-    const properties = node.properties;
-
-    if (result.records.length === 0) {
-      throw new Error('Structure not found');
+  async getStructures(type: StructureType, id: string) {
+    if (type === StructureType.BUILD) {
+      return this.getBuilds();
+    } else if (type === StructureType.FLOOR) {
+      return this.getFloors(id);
+    } else if (type === StructureType.SPACE) {
+      return this.getSpaces(id);
     }
 
-    return properties;
+    throw new Error('Structure not found');
+  }
+
+  async getBuilds() {
+    try {
+      const query = `
+      MATCH (s:Strucutres)-[:HAS_BUILD]->(b:Build) RETURN b
+      `;
+      const result = await this.neo4jService.read(query);
+      return result.records.map((record) => {
+        const node = record.get('b') as { properties: Structure };
+        return node.properties;
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      throw new Error('Building not found');
+    }
+  }
+
+  async getFloors(id: string) {
+    try {
+      const query = `
+      
+
+
+MATCH (b:Build)-[:HAS_FLOOR]->(f:Floor)
+      WHERE b.BuildNo = $id
+      RETURN f
+      
+      `;
+      const result = await this.neo4jService.read(query, { id });
+      return result.records.map((record) => {
+        const node = record.get('f') as { properties: Structure };
+        return node.properties;
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      throw new Error('Floor not found');
+    }
+  }
+
+  async getSpaces(id: string) {
+    try {
+      const query = `
+
+
+
+      MATCH (f:Floor)-[:HAS_FLOOR]->(s:Space)
+      WHERE f.FloorNo = $id
+      RETURN s
+
+      `;
+      const result = await this.neo4jService.read(query, { id });
+      return result.records.map((record) => {
+        const node = record.get('s') as { properties: Structure };
+        return node.properties;
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      throw new Error('Space not found');
+    }
   }
 
   async updateStructure(structureNo: string, data: Record<string, any>) {
@@ -76,19 +133,6 @@ RETURN t
     };
     await this.sendToKafka('update', { structureNo, ...data });
     return node.properties;
-  }
-
-  async getAllStructure(): Promise<Structure[]> {
-    const query = `
-        MATCH (t:Structure)
-        RETURN t
-    `;
-    const result = await this.neo4jService.read(query);
-
-    return result.records.map((record) => {
-      const node = record.get('t') as { properties: Structure };
-      return node.properties;
-    });
   }
 
   async deleteStructure(structureNo: string) {

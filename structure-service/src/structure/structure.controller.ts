@@ -6,8 +6,10 @@ import {
   Delete,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import { StructureService } from './structure.service';
+import { StructureType } from 'src/enums/StrcutureType';
 
 @Controller('structure')
 export class StructureController {
@@ -19,12 +21,8 @@ export class StructureController {
   }
 
   @Get()
-  getAllStructure() {
-    return this.structureService.getAllStructure();
-  }
-  @Get(':structureNo')
-  getStructure(@Param('structureNo') structureNo: string) {
-    return this.structureService.getStructure(structureNo);
+  getStructures(@Query('type') type: StructureType, @Query('id') id: string) {
+    return this.structureService.getStructures(type, id);
   }
 
   @Put(':structureNo')
