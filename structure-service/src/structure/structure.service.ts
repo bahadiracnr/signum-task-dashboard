@@ -100,16 +100,27 @@ RETURN t
   async getBuilds() {
     try {
       const query = `
-      MATCH (s:Strucutres)-[:HAS_BUILD]->(b:Build) RETURN b
+        MATCH (s:Strucutres)-[:HAS_BUILD]->(b:Build)
+        OPTIONAL MATCH (b)-[:HAS_FLOOR]->(f:Floor)
+        RETURN DISTINCT b, CASE WHEN f IS NOT NULL THEN true ELSE false END AS hasFloor
       `;
       const result = await this.neo4jService.read(query);
+
+      if (!result || !result.records || result.records.length === 0) {
+        throw new Error('No results found');
+      }
+
       return result.records.map((record) => {
         const node = record.get('b') as { properties: Structure };
-        return node.properties;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const hasFloor = record.get('hasFloor');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        return { ...node.properties, hasFloor };
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      throw new Error('Building not found');
+      console.error('Error occurred while fetching builds:', error);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      throw new Error(`Building not found. Details: ${error.message}`);
     }
   }
 
