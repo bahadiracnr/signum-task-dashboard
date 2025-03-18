@@ -16,8 +16,11 @@ export class StructureController {
   constructor(private readonly structureService: StructureService) {}
 
   @Post()
-  createStructure(@Body() body: Record<string, any>) {
-    return this.structureService.createStructure(body);
+  createStructures(
+    @Query('type') type: StructureType,
+    @Body() body: Record<string, any>,
+  ) {
+    return this.structureService.createStructures(type, body);
   }
 
   @Get()

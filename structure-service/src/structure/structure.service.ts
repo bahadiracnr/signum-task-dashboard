@@ -28,12 +28,54 @@ export class StructureService implements OnModuleInit {
     });
   }
 
-  async createStructure(data: Record<string, any>): Promise<Structure> {
-    const query = `
+  async createStructures(
+    type: StructureType,
+    data: Record<string, any>,
+  ): Promise<Structure> {
+    if (type === StructureType.BUILD) {
+      return this.createBuild(data);
+    } else if (type === StructureType.FLOOR) {
+      return this.createFloor(data);
+    } else if (type === StructureType.SPACE) {
+      return this.createSpace(data);
+    }
+    throw new Error('Structure not found');
+  }
 
-MATCH (s:Strucutres {name: "Strucutres"})  // Mevcut "structure" düğümünü eşle
-CREATE (t:Strucutres {structureNo: $structureNo, structureName: $structureName})
-CREATE (s)-[:HAS_STRUCUTRES]->(t)  // Yeni düğümü sadece "structure" düğümüne bağla
+  async createBuild(data: Record<string, any>): Promise<Structure> {
+    const query = `
+MATCH (s:Strucutres {name: "Strucutres"})  
+CREATE (b:Build {BuildNo: $BuildNo, BuildName: $BuildName})
+CREATE (s)-[:HAS_BUILD]->(b)  
+RETURN b
+        `;
+    const result = await this.neo4jService.write(query, data);
+    const node = result.records[0].get('b') as { properties: Structure };
+
+    const properties = node.properties;
+    await this.sendToKafka('create', properties);
+    return properties;
+  }
+
+  async createFloor(data: Record<string, any>): Promise<Structure> {
+    const query = `
+    MATCH (fn:Build {BuildNo: $BuildNo})
+CREATE (t:Floor {FloorNo: $FloorNo, FloorName: $FloorName})
+CREATE (fn)-[:HAS_FLOOR]->(t) 
+RETURN t
+        `;
+    const result = await this.neo4jService.write(query, data);
+    const node = result.records[0].get('t') as { properties: Structure };
+    const properties = node.properties;
+    await this.sendToKafka('create', properties);
+    return properties;
+  }
+
+  async createSpace(data: Record<string, any>): Promise<Structure> {
+    const query = `
+    MATCH (fn:Floor {FloorNo: $FloorNo})
+CREATE (t:Space {SpaceNo: $SpaceNo, SpaceName: $SpaceName})
+CREATE (fn)-[:HAS_FLOOR]->(t) 
 RETURN t
         `;
     const result = await this.neo4jService.write(query, data);
