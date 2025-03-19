@@ -1,2 +1,2 @@
-match (n:Project)
-merge (n)-[:PARENT_OF]->(m:Tasks{name: 'Tasks', created_at: timestamp()})
+match (n:project)
+merge (n)-[:PARENT_OF]->(m:task{name: 'task', created_at: timestamp()})

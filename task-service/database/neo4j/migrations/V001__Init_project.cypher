@@ -1,1 +1,1 @@
-CREATE (n:Project {name: 'Project', created_at: timestamp()});
+CREATE (n:project {name: 'project', created_at: timestamp()});

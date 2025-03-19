@@ -22,21 +22,18 @@ export class TaskController {
   getAllTask() {
     return this.TaskService.getAllTask();
   }
-  @Get(':taskNo')
-  getTask(@Param('taskNo') taskNo: string) {
-    return this.TaskService.getTask(taskNo);
+  @Get(':no')
+  getTask(@Param('no') no: string) {
+    return this.TaskService.getTask(no);
   }
 
-  @Put(':taskNo')
-  updateTask(
-    @Param('taskNo') taskNo: string,
-    @Body() body: Record<string, any>,
-  ) {
-    return this.TaskService.updateTask(taskNo, body);
+  @Put(':no')
+  updateTask(@Param('no') no: string, @Body() body: Record<string, any>) {
+    return this.TaskService.updateTask(no, body);
   }
 
-  @Delete(':taskNo')
-  deleteTask(@Param('taskNo') taskNo: string) {
-    return this.TaskService.deleteTask(taskNo);
+  @Delete(':no')
+  deleteTask(@Param('no') no: string) {
+    return this.TaskService.deleteTask(no);
   }
 }

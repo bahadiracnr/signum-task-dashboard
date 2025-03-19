@@ -26,8 +26,8 @@ export class TaskService implements OnModuleInit {
 
   async createTask(data: Record<string, any>): Promise<Task> {
     const query = `
- MATCH (s:Tasks {name: "Tasks"}) 
-CREATE (t:Task {taskNo: $taskNo, taskLocation: $taskLocation, taskStatus: $taskStatus})
+ MATCH (s:task {name: "task"}) 
+CREATE (t:tasks {no: $no, location: $location, status: $status})
 CREATE (s)-[:HAS_TASKS]->(t) 
 RETURN t
         `;
@@ -38,12 +38,12 @@ RETURN t
     return properties;
   }
 
-  async getTask(taskNo: string) {
+  async getTask(no: string) {
     const query = `
-            MATCH (t:Task {taskNo: $taskNo})
+            MATCH (t:task {no: $no})
             RETURN t
         `;
-    const result = await this.neo4jService.read(query, { taskNo });
+    const result = await this.neo4jService.read(query, { no });
     const node = result.records[0].get('t') as { properties: Task };
     const properties = node.properties;
 
@@ -54,14 +54,14 @@ RETURN t
     return properties;
   }
 
-  async updateTask(taskNo: string, data: Record<string, any>) {
+  async updateTask(no: string, data: Record<string, any>) {
     const query = `
-        MATCH (t:Task {taskNo: $taskNo})
+        MATCH (t:task {no: $no})
         SET t += $data
         RETURN t
     `;
 
-    const result = await this.neo4jService.write(query, { taskNo, data });
+    const result = await this.neo4jService.write(query, { no, data });
 
     if (result.records.length === 0) {
       throw new NotFoundException('Task not found');
@@ -71,13 +71,13 @@ RETURN t
       properties: Record<string, any>;
     };
 
-    await this.sendToKafka('update', { taskNo, ...data });
+    await this.sendToKafka('update', { no, ...data });
     return node.properties;
   }
 
   async getAllTask(): Promise<Task[]> {
     const query = `
-        MATCH (t:Task)
+        MATCH (t:tasks)
         RETURN t
     `;
     const result = await this.neo4jService.read(query);
@@ -88,13 +88,13 @@ RETURN t
     });
   }
 
-  async deleteTask(taskNo: string) {
+  async deleteTask(no: string) {
     const query = `
-            MATCH (t:Task {taskNo: $taskNo})
+            MATCH (t:task {no: $no})
             DELETE t
         `;
-    await this.neo4jService.write(query, { taskNo });
-    await this.sendToKafka('delete', { taskNo });
+    await this.neo4jService.write(query, { no });
+    await this.sendToKafka('delete', { no });
     return { message: 'Task deleted' };
   }
 }

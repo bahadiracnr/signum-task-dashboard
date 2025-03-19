@@ -14,8 +14,8 @@ export default function BasicDemo() {
       .then((response) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const treeData = response.data.map((item: any) => ({
-          label: item.BuildName,
-          data: item.BuildNo,
+          label: item.coname,
+          data: item.no,
           leaf: item.hasFloor === true ? false : true,
 
           key: 'Build' + item.BuildNo,
@@ -43,8 +43,8 @@ export default function BasicDemo() {
         .then((response) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const treeData = response.data.map((item: any) => ({
-            label: item.FloorName,
-            data: item.FloorNo,
+            label: item.coname,
+            data: item.no,
             leaf: false,
             key: 'Floor' + item.FloorNo,
             type: 'Floor',
@@ -65,8 +65,8 @@ export default function BasicDemo() {
         .then((response) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const treeData = response.data.map((item: any) => ({
-            label: item.SpaceName,
-            data: item.SpaceNo,
+            label: item.coname,
+            data: item.no,
             leaf: true,
             key: 'Space' + item.SpaceNo,
             type: 'Space',

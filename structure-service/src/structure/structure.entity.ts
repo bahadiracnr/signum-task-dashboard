@@ -1,4 +1,4 @@
 export interface Structure {
-  structureNo: string;
-  structureName: string;
+  no: string;
+  coname: string;
 }

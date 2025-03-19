@@ -28,16 +28,20 @@ export class StructureController {
     return this.structureService.getStructures(type, id);
   }
 
-  @Put(':structureNo')
-  updateStructure(
-    @Param('structureNo') structureNo: string,
+  @Put(':no')
+  updateStructures(
+    @Param('no') no: string,
+    @Query('type') type: StructureType,
     @Body() body: Record<string, any>,
   ) {
-    return this.structureService.updateStructure(structureNo, body);
+    return this.structureService.updateStructures(type, no, body);
   }
 
-  @Delete(':structureNo')
-  deleteStructure(@Param('structureNo') structureNo: string) {
-    return this.structureService.deleteStructure(structureNo);
+  @Delete(':no')
+  deleteStructures(
+    @Query('type') type: StructureType,
+    @Param('no') no: string,
+  ) {
+    return this.structureService.deleteStructures(type, no);
   }
 }
