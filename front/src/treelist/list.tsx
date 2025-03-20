@@ -15,10 +15,9 @@ export default function BasicDemo() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const treeData = response.data.map((item: any) => ({
           label: item.coname,
-          data: item.no,
+          data: item.id,
           leaf: item.hasFloor === true ? false : true,
-
-          key: 'Build' + item.BuildNo,
+          key: 'Build' + item.no,
           type: 'Build',
         }));
         setNodes(treeData);
@@ -44,9 +43,9 @@ export default function BasicDemo() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const treeData = response.data.map((item: any) => ({
             label: item.coname,
-            data: item.no,
-            leaf: false,
-            key: 'Floor' + item.FloorNo,
+            data: item.id,
+            leaf: item.hasSpace === true ? false : true,
+            key: 'Floor' + item.no,
             type: 'Floor',
           }));
           selectedNode.children = treeData;
@@ -66,9 +65,9 @@ export default function BasicDemo() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const treeData = response.data.map((item: any) => ({
             label: item.coname,
-            data: item.no,
+            data: item.id,
             leaf: true,
-            key: 'Space' + item.SpaceNo,
+            key: 'Space' + item.no,
             type: 'Space',
           }));
           selectedNode.children = treeData;

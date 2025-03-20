@@ -123,7 +123,7 @@ RETURN b
       const query = `
         MATCH (s:Structures)-[:HAS_BUILD]->(b:Build)
         OPTIONAL MATCH (b)-[:HAS_FLOOR]->(f:Floor)
-        RETURN DISTINCT b, CASE WHEN f IS NOT NULL THEN true ELSE false END AS hasFloor
+        RETURN DISTINCT b, ID(b) AS buildId, CASE WHEN f IS NOT NULL THEN true ELSE false END AS hasFloor
       `;
       const result = await this.neo4jService.read(query);
 
@@ -133,27 +133,62 @@ RETURN b
 
       return result.records.map((record) => {
         const node = record.get('b') as { properties: Structure };
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        const buildId = record.get('buildId').low; // sadece 'low' kısmını alıyoruz
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const hasFloor = record.get('hasFloor');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        return { ...node.properties, hasFloor };
+        return { ...node.properties, id: buildId, hasFloor }; // 'id' olarak 'low' kısmını döndürüyoruz
       });
     } catch (error) {
       console.error('Error occurred while fetching builds:', error);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      throw new Error(`Building not found. Details: ${error.message}`);
+      throw new Error(`Building not found. Details: `);
     }
   }
 
   async getFloors(id: string) {
     try {
       const query = `
-        MATCH (s:Build)-[:HAS_FLOOR]->(b:Floor)
+        MATCH (s:Build)
+        WHERE ID(s) = $id
+        MATCH (s)-[:HAS_FLOOR]->(b:Floor)
         OPTIONAL MATCH (b)-[:HAS_SPACE]->(f:Space)
-        WHERE s.id = $id
-        RETURN DISTINCT b, CASE WHEN f IS NOT NULL THEN true ELSE false END AS hasSpace
+        RETURN DISTINCT b, ID(b) AS FloorId, CASE WHEN f IS NOT NULL THEN true ELSE false END AS hasSpace
       `;
-      const result = await this.neo4jService.read(query, { id });
+      const result = await this.neo4jService.read(query, { id: Number(id) }); // id'yi sayısal formata çevir
+
+      if (!result || !result.records || result.records.length === 0) {
+        throw new Error('No results found');
+      }
+
+      return result.records.map((record) => {
+        const node = record.get('b') as { properties: Structure }; // 'b' doğru node ismi
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        const buildId = record.get('FloorId').low; // sadece 'low' kısmını alıyoruz
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const hasSpace = record.get('hasSpace');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        return { ...node.properties, id: buildId, hasSpace };
+      });
+    } catch (error) {
+      console.error('Error occurred while fetching floors:', error);
+      throw new Error(`Floor not found. Details: `);
+    }
+  }
+
+  async getSpaces(buildId: string) {
+    try {
+      const query = `
+        MATCH (s:Floor)
+        WHERE ID(s) = $buildId
+        MATCH (s)-[:HAS_SPACE]->(b:Space)
+        OPTIONAL MATCH (b)-[:HAS_SPACE]->(f:Space)
+        RETURN DISTINCT b, ID(b) AS FloorId, CASE WHEN f IS NOT NULL THEN true ELSE false END AS hasSpace
+      `;
+
+      const result = await this.neo4jService.read(query, {
+        buildId: Number(buildId),
+      });
 
       if (!result || !result.records || result.records.length === 0) {
         throw new Error('No results found');
@@ -167,36 +202,8 @@ RETURN b
         return { ...node.properties, hasSpace };
       });
     } catch (error) {
-      console.error('Error occurred while fetching floors:', error);
-      throw new Error(`Floor not found. Details:`);
-    }
-  }
-
-  async getSpaces(id: string) {
-    try {
-      const query = `
-        MATCH (f:Floor)-[:HAS_SPACE]->(s:Space)
-        OPTIONAL MATCH (s)-[:IS_LOCATED_IN]->(b:Build)
-        WHERE f.id = $id
-        RETURN DISTINCT s, CASE WHEN b IS NOT NULL THEN true ELSE false END AS isLocatedInBuild
-      `;
-
-      const result = await this.neo4jService.read(query, { id });
-
-      if (!result || !result.records || result.records.length === 0) {
-        throw new Error('No results found');
-      }
-
-      return result.records.map((record) => {
-        const node = record.get('s') as { properties: Structure };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const isLocatedInBuild = record.get('isLocatedInBuild');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        return { ...node.properties, isLocatedInBuild };
-      });
-    } catch (error) {
       console.error('Error occurred while fetching spaces:', error);
-      throw new Error('Space not found');
+      throw new Error(`Error occurred while fetching spaces: `);
     }
   }
 
