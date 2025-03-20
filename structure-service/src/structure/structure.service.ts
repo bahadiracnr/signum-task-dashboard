@@ -44,14 +44,26 @@ export class StructureService implements OnModuleInit {
   }
 
   async createBuild(data: Record<string, any>): Promise<Structure> {
-    const query = `
+    const queryGetLastNo = `
+MATCH (t:Build)
+RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
+
+    `;
+    const resultLastNo = await this.neo4jService.read(queryGetLastNo);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const lastNo = resultLastNo.records[0].get('lastNo');
+    const newNo = `B${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
+
+    const queryCreateTask = `
 MATCH (s:Structures {name: "Structures"})  
-CREATE (b:Build {no: $no, coname: $coname})
-CREATE (s)-[:HAS_BUILD]->(b)  
-RETURN b
+CREATE (t:Build {no: $no, coname: $coname})
+CREATE (s)-[:HAS_BUILD]->(t)  
+RETURN t
         `;
-    const result = await this.neo4jService.write(query, data);
-    const node = result.records[0].get('b') as { properties: Structure };
+    data.no = newNo;
+    const result = await this.neo4jService.write(queryCreateTask, data);
+    const node = result.records[0].get('t') as { properties: Structure };
 
     const properties = node.properties;
     await this.sendToKafka('create', properties);
@@ -59,7 +71,18 @@ RETURN b
   }
 
   async createFloor(data: Record<string, any>): Promise<Structure> {
-    const query = `
+    const queryGetLastNo = `
+MATCH (t:Floor)
+RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
+
+    `;
+    const resultLastNo = await this.neo4jService.read(queryGetLastNo);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const lastNo = resultLastNo.records[0].get('lastNo');
+    const newNo = `F${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
+
+    const queryCreateTask = `
     MATCH (fn:Build)
     WHERE id(fn) = $id
     CREATE (t:Floor {no: $no, coname: $coname})
@@ -67,7 +90,9 @@ RETURN b
     RETURN t
     `;
 
-    const result = await this.neo4jService.write(query, {
+    data.no = newNo;
+
+    const result = await this.neo4jService.write(queryCreateTask, {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       no: data.no,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -87,15 +112,25 @@ RETURN b
   }
 
   async createSpace(data: Record<string, any>): Promise<Structure> {
-    const query = `
+    const queryGetLastNo = `
+    MATCH (t:Floor)
+    RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
+    
+        `;
+    const resultLastNo = await this.neo4jService.read(queryGetLastNo);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const lastNo = resultLastNo.records[0].get('lastNo');
+    const newNo = `T${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
+    const queryCreateTask = `
     MATCH (fn:Floor)
     WHERE id(fn) = $id
     CREATE (t:Space {no: $no, coname: $coname})
     CREATE (fn)-[:HAS_SPACE]->(t)
     RETURN t
     `;
-
-    const result = await this.neo4jService.write(query, {
+    data.no = newNo;
+    const result = await this.neo4jService.write(queryCreateTask, {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       no: data.no,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
