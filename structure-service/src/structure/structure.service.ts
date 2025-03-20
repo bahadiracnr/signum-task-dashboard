@@ -237,27 +237,32 @@ RETURN b
 
   async updateStructures(
     type: StructureType,
-    no: string,
+    id: string,
     data: Record<string, any>,
   ) {
     if (type === StructureType.BUILD) {
-      return this.updateBuild(no, data);
+      return this.updateBuild(id, data);
     } else if (type === StructureType.FLOOR) {
-      return this.updateFloor(no, data);
+      return this.updateFloor(id, data);
     } else if (type === StructureType.SPACE) {
-      return this.updateSpace(no, data);
+      return this.updateSpace(id, data);
     }
     throw new Error('Structure not found');
   }
 
-  async updateBuild(no: string, data: Record<string, any>) {
+  async updateBuild(id: string, data: Record<string, any>) {
     const query = `
-        MATCH (t:Build {no: $no})
+        MATCH (t:Build) 
+      WHERE id(t) = $id 
         SET t += $data
         RETURN t
     `;
 
-    const result = await this.neo4jService.write(query, { no, data });
+    const numericId = parseInt(id, 10);
+    const result = await this.neo4jService.write(query, {
+      id: numericId,
+      data,
+    });
 
     if (result.records.length === 0) {
       throw new NotFoundException('Build not found');
@@ -266,18 +271,23 @@ RETURN b
     const node = result.records[0].get('t') as {
       properties: Record<string, any>;
     };
-    await this.sendToKafka('update', { no, ...data });
+    await this.sendToKafka('update', { id, ...data });
     return node.properties;
   }
 
-  async updateFloor(no: string, data: Record<string, any>) {
+  async updateFloor(id: string, data: Record<string, any>) {
     const query = `
-        MATCH (t:Floor {no: $no})
+        MATCH (t:Floor) 
+      WHERE id(t) = $id 
         SET t += $data
         RETURN t
     `;
-    const result = await this.neo4jService.write(query, { no, data });
 
+    const numericId = parseInt(id, 10);
+    const result = await this.neo4jService.write(query, {
+      id: numericId,
+      data,
+    });
     if (result.records.length === 0) {
       throw new NotFoundException('Floor not found');
     }
@@ -285,18 +295,23 @@ RETURN b
     const node = result.records[0].get('t') as {
       properties: Record<string, any>;
     };
-    await this.sendToKafka('update', { no, ...data });
+    await this.sendToKafka('update', { id, ...data });
     return node.properties;
   }
 
-  async updateSpace(no: string, data: Record<string, any>) {
+  async updateSpace(id: string, data: Record<string, any>) {
     const query = `
-        MATCH (t:Space {no: $no})
+        MATCH (t:Space) 
+      WHERE id(t) = $id 
         SET t += $data
         RETURN t
     `;
-    const result = await this.neo4jService.write(query, { no, data });
 
+    const numericId = parseInt(id, 10);
+    const result = await this.neo4jService.write(query, {
+      id: numericId,
+      data,
+    });
     if (result.records.length === 0) {
       throw new NotFoundException('Space not found');
     }
@@ -304,7 +319,7 @@ RETURN b
     const node = result.records[0].get('t') as {
       properties: Record<string, any>;
     };
-    await this.sendToKafka('update', { no, ...data });
+    await this.sendToKafka('update', { id, ...data });
     return node.properties;
   }
 

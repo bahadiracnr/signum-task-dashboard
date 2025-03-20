@@ -4,7 +4,6 @@ import {
   Get,
   Put,
   Delete,
-  Param,
   Body,
   Query,
 } from '@nestjs/common';
@@ -28,9 +27,9 @@ export class StructureController {
     return this.structureService.getStructures(type, id);
   }
 
-  @Put(':id')
+  @Put()
   updateStructures(
-    @Param('id') id: string,
+    @Query('id') id: string, // Query'den id'yi alıyoruz
     @Query('type') type: StructureType,
     @Body() body: Record<string, any>,
   ) {
