@@ -34,13 +34,14 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
     const resultLastNo = await this.neo4jService.read(queryGetLastNo);
 
     // Eğer daha önce bir 'no' kullanılmamışsa, 1'den başlat, yoksa bir artır
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const lastNo = resultLastNo.records[0].get('lastNo');
     const newNo = `T${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
 
     // Yeni task düğümünü oluştur
     const queryCreateTask = `
     MATCH (s:task {name: "task"}) 
-    CREATE (t:tasks {no: $no, location: $location, status: $status})
+    CREATE (t:tasks {no: $no, location: $location, status: $status, name: $name, description: $description})
     CREATE (s)-[:HAS_TASKS]->(t) 
     RETURN t
     `;
@@ -95,23 +96,37 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
   async getAllTask(): Promise<Task[]> {
     const query = `
         MATCH (t:tasks)
-        RETURN t
+        RETURN t, ID(t) AS taskId
     `;
     const result = await this.neo4jService.read(query);
 
     return result.records.map((record) => {
       const node = record.get('t') as { properties: Task };
-      return node.properties;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const taskId = record.get('taskId').low;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      return { ...node.properties, id: taskId };
     });
   }
 
-  async deleteTask(no: string) {
+  async deleteTask(id: string) {
     const query = `
-            MATCH (t:task {no: $no})
-            DELETE t
-        `;
-    await this.neo4jService.write(query, { no });
-    await this.sendToKafka('delete', { no });
-    return { message: 'Task deleted' };
+      MATCH (t:tasks) 
+      WHERE id(t) = $id 
+      DETACH DELETE t
+    `;
+
+    try {
+      const numericId = parseInt(id, 10);
+
+      await this.neo4jService.write(query, { id: numericId });
+
+      await this.sendToKafka('delete', { id: numericId });
+
+      return { message: 'Task deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw new Error('Failed to delete task');
+    }
   }
 }

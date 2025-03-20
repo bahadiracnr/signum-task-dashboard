@@ -18,6 +18,12 @@ export default function Table() {
         <Column field="no" header="TaskNo"></Column>
         <Column field="location" header="Location"></Column>
         <Column field="status" header="Status"></Column>
+        <Column field="name" header="Name"></Column>
+        <Column
+          field="description"
+          header="Description
+        "
+        ></Column>
       </DataTable>
     </div>
   );

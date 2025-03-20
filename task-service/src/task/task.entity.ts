@@ -6,8 +6,6 @@ export interface Task {
 // yazım yanlışı olmayacak
 
 // Task
-// no unique ve otomatik oluşacak T1, T2, T3, ...
-// name ve description alanı olacak
 // status enum olacak ve 3 farklı değer alacak (TODO, IN_PROGRESS, DONE)
 // createdAt ve updatedAt alanı olacak ve otomatik oluşacak
 
