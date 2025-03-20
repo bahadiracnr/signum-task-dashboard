@@ -22,14 +22,10 @@ export class TaskController {
   getAllTask() {
     return this.TaskService.getAllTask();
   }
-  @Get(':no')
-  getTask(@Param('no') no: string) {
-    return this.TaskService.getTask(no);
-  }
 
-  @Put(':no')
-  updateTask(@Param('no') no: string, @Body() body: Record<string, any>) {
-    return this.TaskService.updateTask(no, body);
+  @Put(':id')
+  updateTask(@Param('id') id: string, @Body() body: Record<string, any>) {
+    return this.TaskService.updateTask(id, body);
   }
 
   @Delete(':id')

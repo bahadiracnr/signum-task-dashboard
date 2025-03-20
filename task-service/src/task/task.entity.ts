@@ -7,7 +7,6 @@ export interface Task {
 
 // Task
 // status enum olacak ve 3 farklı değer alacak (TODO, IN_PROGRESS, DONE)
-// createdAt ve updatedAt alanı olacak ve otomatik oluşacak
 
 // Structure
 // no unique olacak (her stucture bazında unique olacak) (Build, Floor,Space)

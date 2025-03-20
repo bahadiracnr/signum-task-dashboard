@@ -72,9 +72,13 @@ RETURN b
       no: data.no,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       coname: data.coname,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      id: data.id,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      id: parseInt(data.id, 10), // ID integer olarak gönderilmeli
     });
+
+    if (!result.records.length) {
+      throw new Error('No records found, possibly incorrect Build ID');
+    }
 
     const node = result.records[0].get('t') as { properties: Structure };
     const properties = node.properties;
@@ -96,9 +100,13 @@ RETURN b
       no: data.no,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       coname: data.coname,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      id: data.id,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      id: parseInt(data.id, 10), // ID integer olarak gönderilmeli
     });
+
+    if (!result.records.length) {
+      throw new Error('No records found, possibly incorrect Floor ID');
+    }
 
     const node = result.records[0].get('t') as { properties: Structure };
     const properties = node.properties;
@@ -300,44 +308,78 @@ RETURN b
     return node.properties;
   }
 
-  async deleteStructures(type: StructureType, no: string) {
+  async deleteStructures(type: StructureType, id: string) {
     if (type === StructureType.BUILD) {
-      return this.deleteBuild(no);
+      return this.deleteBuild(id);
     } else if (type === StructureType.FLOOR) {
-      return this.deleteFloor(no);
+      return this.deleteFloor(id);
     } else if (type === StructureType.SPACE) {
-      return this.deleteSpace(no);
+      return this.deleteSpace(id);
     }
     throw new Error('Structure not found');
   }
 
-  async deleteBuild(no: string) {
+  async deleteBuild(id: string) {
     const query = `
-            MATCH (t:Build {no: $no})-[r]->()
-DELETE r, t
-        `;
-    await this.neo4jService.write(query, { no });
-    await this.sendToKafka('delete', { no });
-    return { message: 'Build deleted' };
+      MATCH (t:Build) 
+      WHERE id(t) = $id 
+      DETACH DELETE t
+    `;
+
+    try {
+      const numericId = parseInt(id, 10);
+
+      await this.neo4jService.write(query, { id: numericId });
+
+      await this.sendToKafka('delete', { id: numericId });
+
+      return { message: 'Task deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw new Error('Failed to delete task');
+    }
   }
 
-  async deleteFloor(no: string) {
+  async deleteFloor(id: string) {
     const query = `
-            MATCH (t:Floor {no: $no})-[r]->()
-    DELETE r, t
-        `;
-    await this.neo4jService.write(query, { no });
-    await this.sendToKafka('delete', { no });
-    return { message: 'Floor deleted' };
+      MATCH (f:Floor) 
+      WHERE id(f) = $id 
+      OPTIONAL MATCH (f)-[:HAS_SPACE]->(s:Space)
+    DETACH DELETE f, s
+    `;
+
+    try {
+      const numericId = parseInt(id, 10);
+
+      await this.neo4jService.write(query, { id: numericId });
+
+      await this.sendToKafka('delete', { id: numericId });
+
+      return { message: 'Task deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw new Error('Failed to delete task');
+    }
   }
 
-  async deleteSpace(no: string) {
+  async deleteSpace(id: string) {
     const query = `
-            MATCH (t:Space {no: $no})-[r]->()
-    DELETE r, t
-        `;
-    await this.neo4jService.write(query, { no });
-    await this.sendToKafka('delete', { no });
-    return { message: 'Space deleted' };
+      MATCH (t:Space) 
+      WHERE id(t) = $id 
+      DETACH DELETE t
+    `;
+
+    try {
+      const numericId = parseInt(id, 10);
+
+      await this.neo4jService.write(query, { id: numericId });
+
+      await this.sendToKafka('delete', { id: numericId });
+
+      return { message: 'Task deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw new Error('Failed to delete task');
+    }
   }
 }

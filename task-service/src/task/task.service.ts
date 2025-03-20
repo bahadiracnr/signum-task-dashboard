@@ -25,7 +25,6 @@ export class TaskService implements OnModuleInit {
   }
 
   async createTask(data: Record<string, any>): Promise<Task> {
-    // Veritabanındaki mevcut en son 'no'yu al
     const queryGetLastNo = `
 MATCH (t:tasks)
 RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
@@ -33,22 +32,19 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
     `;
     const resultLastNo = await this.neo4jService.read(queryGetLastNo);
 
-    // Eğer daha önce bir 'no' kullanılmamışsa, 1'den başlat, yoksa bir artır
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const lastNo = resultLastNo.records[0].get('lastNo');
     const newNo = `T${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
 
-    // Yeni task düğümünü oluştur
     const queryCreateTask = `
     MATCH (s:task {name: "task"}) 
     CREATE (t:tasks {no: $no, location: $location, status: $status, name: $name, description: $description})
     CREATE (s)-[:HAS_TASKS]->(t) 
     RETURN t
     `;
-    data.no = newNo; // Yeni 'no'yu veriyle birlikte gönderiyoruz
+    data.no = newNo;
     const result = await this.neo4jService.write(queryCreateTask, data);
 
-    // Yeni task düğümünü al ve Kafka'ya gönder
     const node = result.records[0].get('t') as { properties: Task };
     const properties = node.properties;
     await this.sendToKafka('create', properties);
@@ -56,30 +52,18 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
     return properties;
   }
 
-  async getTask(no: string) {
+  async updateTask(id: string, data: Record<string, any>) {
     const query = `
-            MATCH (t:task {no: $no})
-            RETURN t
-        `;
-    const result = await this.neo4jService.read(query, { no });
-    const node = result.records[0].get('t') as { properties: Task };
-    const properties = node.properties;
-
-    if (result.records.length === 0) {
-      throw new Error('Task not found');
-    }
-
-    return properties;
-  }
-
-  async updateTask(no: string, data: Record<string, any>) {
-    const query = `
-        MATCH (t:task {no: $no})
+         MATCH (t:tasks) 
+      WHERE id(t) = $id 
         SET t += $data
         RETURN t
     `;
-
-    const result = await this.neo4jService.write(query, { no, data });
+    const numericId = parseInt(id, 10);
+    const result = await this.neo4jService.write(query, {
+      id: numericId,
+      data,
+    });
 
     if (result.records.length === 0) {
       throw new NotFoundException('Task not found');
@@ -89,7 +73,7 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
       properties: Record<string, any>;
     };
 
-    await this.sendToKafka('update', { no, ...data });
+    await this.sendToKafka('update', { id: numericId, ...data });
     return node.properties;
   }
 
