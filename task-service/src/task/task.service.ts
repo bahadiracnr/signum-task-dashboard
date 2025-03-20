@@ -25,16 +25,33 @@ export class TaskService implements OnModuleInit {
   }
 
   async createTask(data: Record<string, any>): Promise<Task> {
-    const query = `
- MATCH (s:task {name: "task"}) 
-CREATE (t:tasks {no: $no, location: $location, status: $status})
-CREATE (s)-[:HAS_TASKS]->(t) 
-RETURN t
-        `;
-    const result = await this.neo4jService.write(query, data);
+    // Veritabanındaki mevcut en son 'no'yu al
+    const queryGetLastNo = `
+MATCH (t:tasks)
+RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
+
+    `;
+    const resultLastNo = await this.neo4jService.read(queryGetLastNo);
+
+    // Eğer daha önce bir 'no' kullanılmamışsa, 1'den başlat, yoksa bir artır
+    const lastNo = resultLastNo.records[0].get('lastNo');
+    const newNo = `T${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
+
+    // Yeni task düğümünü oluştur
+    const queryCreateTask = `
+    MATCH (s:task {name: "task"}) 
+    CREATE (t:tasks {no: $no, location: $location, status: $status})
+    CREATE (s)-[:HAS_TASKS]->(t) 
+    RETURN t
+    `;
+    data.no = newNo; // Yeni 'no'yu veriyle birlikte gönderiyoruz
+    const result = await this.neo4jService.write(queryCreateTask, data);
+
+    // Yeni task düğümünü al ve Kafka'ya gönder
     const node = result.records[0].get('t') as { properties: Task };
     const properties = node.properties;
     await this.sendToKafka('create', properties);
+
     return properties;
   }
 
