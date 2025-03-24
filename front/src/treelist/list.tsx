@@ -22,7 +22,7 @@ export default function BasicDemo() {
         const treeData = response.data.map((item: any) => ({
           label: renderNodeLabel(
             item.coname,
-            () => setSelectedTask({ parentId: item.id, type: 'FLOOR' }),
+            () => setSelectedTask({ parentId: item.id, type: 'BUILD' }),
             () => handleDelete('BUILD', item.id),
             () =>
               setSelectedTask({
@@ -65,7 +65,7 @@ export default function BasicDemo() {
           const treeData = response.data.map((item: any) => ({
             label: renderNodeLabel(
               item.coname,
-              () => setSelectedTask({ parentId: item.id, type: 'SPACE' }),
+              () => setSelectedTask({ parentId: item.id, type: 'FLOOR' }),
               () => handleDelete('FLOOR', item.id),
               () =>
                 setSelectedTask({
@@ -96,7 +96,7 @@ export default function BasicDemo() {
           const treeData = response.data.map((item: any) => ({
             label: renderNodeLabel(
               item.coname,
-              undefined,
+              () => setSelectedTask({ parentId: item.id, type: 'SPACE' }),
               () => handleDelete('SPACE', item.id),
               () =>
                 setSelectedTask({

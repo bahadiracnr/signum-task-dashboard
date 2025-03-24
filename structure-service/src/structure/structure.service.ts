@@ -167,7 +167,6 @@ RETURN t
 
       return result.records.map((record) => {
         const node = record.get('b') as { properties: Structure };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const buildId = record.get('buildId').low; // sadece 'low' kısmını alıyoruz
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const hasFloor = record.get('hasFloor');
@@ -197,11 +196,8 @@ RETURN t
 
       return result.records.map((record) => {
         const node = record.get('b') as { properties: Structure }; // 'b' doğru node ismi
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const buildId = record.get('FloorId').low; // sadece 'low' kısmını alıyoruz
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const hasSpace = record.get('hasSpace');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return { ...node.properties, id: buildId, hasSpace };
       });
     } catch (error) {
@@ -228,12 +224,12 @@ RETURN t
         throw new Error('No results found');
       }
 
-      return result.records.map((record) => {
+      return result.records.map((record: any) => {
         const node = record.get('b') as { properties: Structure };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const hasSpace = record.get('hasSpace');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        return { ...node.properties, hasSpace };
+
+        const spaceId = record.get('FloorId').low;
+        return { ...node.properties, hasSpace, id: spaceId };
       });
     } catch (error) {
       console.error('Error occurred while fetching spaces:', error);
