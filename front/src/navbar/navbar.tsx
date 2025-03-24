@@ -1,57 +1,36 @@
 import { Menubar } from 'primereact/menubar';
-import { MenuItem } from 'primereact/menuitem';
+import { InputText } from 'primereact/inputtext';
+import './navbar.css';
 
-export default function BasicDemo() {
-  const items: MenuItem[] = [
-    {
-      label: 'Home',
-      icon: 'pi pi-home',
-    },
-    {
-      label: 'Features',
-      icon: 'pi pi-star',
-    },
-    {
-      label: 'Projects',
-      icon: 'pi pi-search',
-      items: [
-        {
-          label: 'Components',
-          icon: 'pi pi-bolt',
-        },
-        {
-          label: 'Blocks',
-          icon: 'pi pi-server',
-        },
-        {
-          label: 'UI Kit',
-          icon: 'pi pi-pencil',
-        },
-        {
-          label: 'Templates',
-          icon: 'pi pi-palette',
-          items: [
-            {
-              label: 'Apollo',
-              icon: 'pi pi-palette',
-            },
-            {
-              label: 'Ultima',
-              icon: 'pi pi-palette',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: 'Contact',
-      icon: 'pi pi-envelope',
-    },
-  ];
+export default function Navbar() {
+  const start = (
+    <div className="navbar-brand">
+      <i className="pi pi-prime brand-icon"></i>
+      <span className="brand-name">Signum</span>
+    </div>
+  );
+
+  const end = (
+    <div className="navbar-end">
+      <span className="p-input-icon-left search-box">
+        <i className="pi pi-search" />
+        <InputText placeholder="Ara..." />
+      </span>
+      <div className="user-profile">
+        <span className="notification-badge">
+          <i className="pi pi-bell"></i>
+          <span className="badge">3</span>
+        </span>
+        <div className="avatar">
+          <i className="pi pi-user"></i>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="card">
-      <Menubar className="navbar_color" model={items} />
+    <div className="navbar-wrapper">
+      <Menubar start={start} end={end} className="main-navbar" />
     </div>
   );
 }

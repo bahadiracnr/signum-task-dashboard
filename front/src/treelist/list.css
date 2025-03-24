@@ -1,0 +1,175 @@
+.structure-tree-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 1rem;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.header-section h2 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.tree-container {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  background-color: var(--surface-card);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  min-height: 400px;
+}
+
+.structure-tree {
+  width: 100%;
+}
+
+/* Stil geliştirmeleri */
+.tree-node-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.tree-node-content:hover {
+  background-color: var(--surface-hover);
+}
+
+.node-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  font-weight: 500;
+}
+
+.node-actions {
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tree-node-content:hover .node-actions {
+  opacity: 1;
+}
+
+.node-action-button {
+  width: 2rem !important;
+  height: 2rem !important;
+  font-size: 0.875rem !important;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 200px;
+}
+
+.loading-spinner p {
+  margin-top: 1rem;
+  color: var(--text-color-secondary);
+}
+
+/* Boş durum */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 200px;
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-state p {
+  margin: 1rem 0;
+  color: var(--text-color-secondary);
+  font-size: 1.1rem;
+}
+
+/* PrimeReact Tree bileşeni özelleştirmeleri */
+:global(.p-tree) {
+  border: none !important;
+  padding: 0.5rem !important;
+}
+
+:global(.p-treenode-content) {
+  padding: 0.5rem 0 !important;
+  border-radius: 6px !important;
+}
+
+:global(.p-treenode-content.p-highlight) {
+  background-color: var(--primary-50) !important;
+}
+
+:global(
+    .p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler
+  ) {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+:global(.p-tree .p-tree-filter-container) {
+  margin-bottom: 1rem !important;
+}
+
+:global(.p-tree .p-tree-filter-container .p-tree-filter) {
+  width: 100% !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 6px !important;
+}
+
+:global(.p-treenode-children) {
+  padding-left: 1.5rem !important;
+}
+
+/* Her seviye için farklı simge renkleri */
+:global(.p-treenode[aria-level='1'] .pi-building) {
+  color: var(--primary-color);
+}
+
+:global(.p-treenode[aria-level='2'] .pi-th-large) {
+  color: var(--orange-500);
+}
+
+:global(.p-treenode[aria-level='3'] .pi-box) {
+  color: var(--cyan-500);
+}
+
+/* Responsive tasarım */
+@media screen and (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .tree-node-content {
+    flex-wrap: wrap;
+  }
+
+  .node-actions {
+    margin-top: 0.5rem;
+    opacity: 1;
+  }
+}
