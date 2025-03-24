@@ -30,7 +30,7 @@ export class StructureController {
 
   @Put()
   updateStructures(
-    @Query('id') id: string, // Query'den id'yi alıyoruz
+    @Query('id') id: string,
     @Query('type') type: StructureType,
     @Body() body: Record<string, any>,
   ) {

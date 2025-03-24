@@ -5,7 +5,6 @@ import './Form.css';
 
 interface FormProps {
   onTaskSaved: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   task?: any;
   visible: boolean;
   onHide: () => void;

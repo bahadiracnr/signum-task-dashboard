@@ -6,11 +6,9 @@ import StructureForm from '../form/StructureForm';
 import 'primeicons/primeicons.css';
 
 export default function BasicDemo() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [nodes, setNodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [formVisible, setFormVisible] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
 
   const fetchTasks = () => {
@@ -18,7 +16,6 @@ export default function BasicDemo() {
     axios
       .get('http://localhost:5006/structure?type=BUILD')
       .then((response) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const treeData = response.data.map((item: any) => ({
           label: renderNodeLabel(
             item.coname,
@@ -50,7 +47,6 @@ export default function BasicDemo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleNodeSelect = (e: any) => {
     setLoading(true);
     const selectedNode = e.node;
@@ -61,7 +57,6 @@ export default function BasicDemo() {
           `http://localhost:5006/structure?type=FLOOR&id=${selectedNode.data}`,
         )
         .then((response) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const treeData = response.data.map((item: any) => ({
             label: renderNodeLabel(
               item.coname,
@@ -92,7 +87,6 @@ export default function BasicDemo() {
           `http://localhost:5006/structure?type=SPACE&id=${selectedNode.data}`,
         )
         .then((response) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const treeData = response.data.map((item: any) => ({
             label: renderNodeLabel(
               item.coname,

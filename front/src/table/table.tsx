@@ -7,7 +7,7 @@ import Form from '../form/Form';
 
 export default function Table() {
   const [data, setData] = useState([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
   const [formVisible, setFormVisible] = useState(false);
 
@@ -30,7 +30,6 @@ export default function Table() {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const actionBodyTemplate = (rowData: any) => {
     return (
       <div className="flex gap-2">

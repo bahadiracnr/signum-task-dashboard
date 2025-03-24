@@ -21,7 +21,6 @@ export class LogService implements OnModuleInit {
 
     await this.consumer.run({
       eachMessage: async ({ message }) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const logData = JSON.parse(message.value?.toString() || '{}');
         console.log('logData', logData);
         await new this.logModel(logData).save();

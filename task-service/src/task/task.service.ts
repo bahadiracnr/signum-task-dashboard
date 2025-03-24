@@ -32,12 +32,9 @@ export class TaskService implements OnModuleInit {
       `;
     const resultLastNo = await this.neo4jService.read(queryGetLastNo);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const lastNo = resultLastNo.records[0].get('lastNo');
     const newNo = `T${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
 
-    // Status değerini enum olarak kontrol et
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     if (!Object.values(TaskStatus).includes(data.status)) {
       throw new Error(`Invalid status value: ${data.status}`);
     }
@@ -50,7 +47,7 @@ export class TaskService implements OnModuleInit {
       `;
 
     data.no = newNo;
-    data.status = TaskStatus[data.status as keyof typeof TaskStatus]; // Enum'a çevirme
+    data.status = TaskStatus[data.status as keyof typeof TaskStatus];
 
     const result = await this.neo4jService.write(queryCreateTask, data);
 
@@ -95,9 +92,7 @@ export class TaskService implements OnModuleInit {
 
     return result.records.map((record) => {
       const node = record.get('t') as { properties: Task };
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const taskId = record.get('taskId').low;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       return { ...node.properties, id: taskId };
     });
   }

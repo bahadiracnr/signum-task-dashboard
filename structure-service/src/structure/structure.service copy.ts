@@ -51,7 +51,6 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
     `;
     const resultLastNo = await this.neo4jService.read(queryGetLastNo);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const lastNo = resultLastNo.records[0].get('lastNo');
     const newNo = `B${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
 
@@ -78,7 +77,6 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
     `;
     const resultLastNo = await this.neo4jService.read(queryGetLastNo);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const lastNo = resultLastNo.records[0].get('lastNo');
     const newNo = `F${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
 
@@ -93,12 +91,11 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
     data.no = newNo;
 
     const result = await this.neo4jService.write(queryCreateTask, {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       no: data.no,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       coname: data.coname,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      id: parseInt(data.id, 10), // ID integer olarak gönderilmeli
+
+      id: parseInt(data.id, 10),
     });
 
     if (!result.records.length) {
@@ -118,7 +115,7 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
     `;
 
     const resultLastNo = await this.neo4jService.read(queryGetLastNo);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const lastNo = resultLastNo.records[0].get('lastNo');
     const newNo = `T${(Number(lastNo) + 1).toString().padStart(3, '0')}`;
 
@@ -132,11 +129,10 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
 
     data.no = newNo;
     const result = await this.neo4jService.write(queryCreateTask, {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       no: data.no,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       coname: data.coname,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
       id: parseInt(data.id, 10),
     });
 
@@ -177,12 +173,12 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
 
       return result.records.map((record) => {
         const node = record.get('b') as { properties: Structure };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const buildId = record.get('buildId').low; // sadece 'low' kısmını alıyoruz
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
+        const buildId = record.get('buildId').low;
+
         const hasFloor = record.get('hasFloor');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        return { ...node.properties, id: buildId, hasFloor }; // 'id' olarak 'low' kısmını döndürüyoruz
+
+        return { ...node.properties, id: buildId, hasFloor };
       });
     } catch (error) {
       console.error('Error occurred while fetching builds:', error);
@@ -199,19 +195,19 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
         OPTIONAL MATCH (b)-[:HAS_SPACE]->(f:Space)
         RETURN DISTINCT b, ID(b) AS FloorId, CASE WHEN f IS NOT NULL THEN true ELSE false END AS hasSpace
       `;
-      const result = await this.neo4jService.read(query, { id: Number(id) }); // id'yi sayısal formata çevir
+      const result = await this.neo4jService.read(query, { id: Number(id) });
 
       if (!result || !result.records || result.records.length === 0) {
         throw new Error('No results found');
       }
 
       return result.records.map((record) => {
-        const node = record.get('b') as { properties: Structure }; // 'b' doğru node ismi
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const buildId = record.get('FloorId').low; // sadece 'low' kısmını alıyoruz
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const node = record.get('b') as { properties: Structure };
+
+        const buildId = record.get('FloorId').low;
+
         const hasSpace = record.get('hasSpace');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         return { ...node.properties, id: buildId, hasSpace };
       });
     } catch (error) {
@@ -240,9 +236,9 @@ RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
 
       return result.records.map((record) => {
         const node = record.get('b') as { properties: Structure };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         const hasSpace = record.get('hasSpace');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         return { ...node.properties, hasSpace };
       });
     } catch (error) {
