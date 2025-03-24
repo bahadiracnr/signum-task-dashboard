@@ -2,19 +2,14 @@ import { useState, useEffect } from 'react';
 import { Tree } from 'primereact/tree';
 import axios from 'axios';
 import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import StructureForm from '../form/StructureForm';
-import { useRef } from 'react';
-import './list.css';
 import 'primeicons/primeicons.css';
 
-export default function StructureTreeList() {
+export default function BasicDemo() {
   const [nodes, setNodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [formVisible, setFormVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
-  const toast = useRef<any>(null);
 
   const fetchTasks = () => {
     setLoading(true);
@@ -24,7 +19,7 @@ export default function StructureTreeList() {
         const treeData = response.data.map((item: any) => ({
           label: renderNodeLabel(
             item.coname,
-            () => setSelectedTask({ parentId: item.id, type: 'BUILD' }),
+            () => setSelectedTask({ parentId: item.id, type: 'FLOOR' }),
             () => handleDelete('BUILD', item.id),
             () =>
               setSelectedTask({
@@ -37,7 +32,6 @@ export default function StructureTreeList() {
           leaf: !item.hasFloor,
           key: 'Build' + item.no,
           type: 'Build',
-          icon: 'pi pi-building',
         }));
         setNodes(treeData);
         setLoading(false);
@@ -45,12 +39,6 @@ export default function StructureTreeList() {
       .catch((error) => {
         console.error('Error fetching tree data:', error);
         setLoading(false);
-        toast.current.show({
-          severity: 'error',
-          summary: 'Hata',
-          detail: 'Yapı verileri yüklenirken bir hata oluştu',
-          life: 3000,
-        });
       });
   };
 
@@ -72,7 +60,7 @@ export default function StructureTreeList() {
           const treeData = response.data.map((item: any) => ({
             label: renderNodeLabel(
               item.coname,
-              () => setSelectedTask({ parentId: item.id, type: 'FLOOR' }),
+              () => setSelectedTask({ parentId: item.id, type: 'SPACE' }),
               () => handleDelete('FLOOR', item.id),
               () =>
                 setSelectedTask({
@@ -85,7 +73,6 @@ export default function StructureTreeList() {
             leaf: !item.hasSpace,
             key: 'Floor' + item.no,
             type: 'Floor',
-            icon: 'pi pi-th-large',
           }));
           selectedNode.children = treeData;
           setLoading(false);
@@ -93,12 +80,6 @@ export default function StructureTreeList() {
         .catch((error) => {
           console.error('Error fetching FLOORs:', error);
           setLoading(false);
-          toast.current.show({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Kat verileri yüklenirken bir hata oluştu',
-            life: 3000,
-          });
         });
     } else if (selectedNode.type === 'Floor') {
       axios
@@ -122,7 +103,6 @@ export default function StructureTreeList() {
             leaf: true,
             key: 'Space' + item.no,
             type: 'Space',
-            icon: 'pi pi-box',
           }));
           selectedNode.children = treeData;
           setLoading(false);
@@ -130,12 +110,6 @@ export default function StructureTreeList() {
         .catch((error) => {
           console.error('Error fetching SPACEs:', error);
           setLoading(false);
-          toast.current.show({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Alan verileri yüklenirken bir hata oluştu',
-            life: 3000,
-          });
         });
     }
   };
@@ -146,20 +120,8 @@ export default function StructureTreeList() {
         `http://localhost:5006/structure?type=${type}&id=${id}`,
       );
       fetchTasks();
-      toast.current.show({
-        severity: 'success',
-        summary: 'Başarılı',
-        detail: 'Öğe başarıyla silindi',
-        life: 3000,
-      });
     } catch (error) {
       console.error('Silme sırasında hata:', error);
-      toast.current.show({
-        severity: 'error',
-        summary: 'Hata',
-        detail: 'Silme işlemi başarısız oldu',
-        life: 3000,
-      });
     }
   };
 
@@ -169,15 +131,29 @@ export default function StructureTreeList() {
     onDelete?: () => void,
     onUpdate?: () => void,
   ) => (
-    <div className="tree-node-content">
-      <span className="node-title">{title}</span>
-      <div className="node-actions">
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        minWidth: '1370px',
+      }}
+    >
+      <span
+        style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {title}
+      </span>
+      <div style={{ display: 'flex', gap: '0.5rem' }}>
         {onAdd && (
           <Button
             icon="pi pi-plus"
-            className="p-button-rounded p-button-success p-button-text node-action-button"
-            tooltip="Yeni ekle"
-            tooltipOptions={{ position: 'top' }}
+            className="p-button-sm p-0"
+            style={buttonStyle}
             onClick={(e) => {
               e.stopPropagation();
               onAdd();
@@ -188,9 +164,8 @@ export default function StructureTreeList() {
         {onUpdate && (
           <Button
             icon="pi pi-pencil"
-            className="p-button-rounded p-button-warning p-button-text node-action-button"
-            tooltip="Düzenle"
-            tooltipOptions={{ position: 'top' }}
+            className="p-button-sm p-0"
+            style={{ ...buttonStyle, color: 'gray' }}
             onClick={(e) => {
               e.stopPropagation();
               onUpdate();
@@ -200,10 +175,9 @@ export default function StructureTreeList() {
         )}
         {onDelete && (
           <Button
-            icon="pi pi-trash"
-            className="p-button-rounded p-button-danger p-button-text node-action-button"
-            tooltip="Sil"
-            tooltipOptions={{ position: 'top' }}
+            icon="pi pi-minus"
+            className="p-button-sm p-0"
+            style={{ ...buttonStyle, color: 'red' }}
             onClick={(e) => {
               e.stopPropagation();
               onDelete();
@@ -214,63 +188,26 @@ export default function StructureTreeList() {
     </div>
   );
 
+  const buttonStyle = {
+    background: 'transparent',
+    border: 'none',
+    boxShadow: 'none',
+    width: '1.25rem',
+    height: '1.25rem',
+    flexShrink: 0,
+    color: 'black',
+  };
+
   return (
-    <div className="structure-tree-container">
-      <Toast ref={toast} />
-
-      <div className="header-section">
-        <h2>Yapı Hiyerarşisi</h2>
-        <Button
-          label="Yeni Bina Ekle"
-          icon="pi pi-plus"
-          className="p-button-raised"
-          onClick={() => {
-            setSelectedTask(null);
-            setFormVisible(true);
-          }}
-        />
-      </div>
-
-      <div className="tree-container">
-        {loading && nodes.length === 0 ? (
-          <div className="loading-spinner">
-            <ProgressSpinner
-              style={{ width: '50px', height: '50px' }}
-              strokeWidth="4"
-            />
-            <p>Veriler yükleniyor...</p>
-          </div>
-        ) : nodes.length === 0 ? (
-          <div className="empty-state">
-            <i
-              className="pi pi-info-circle"
-              style={{ fontSize: '2rem', color: 'var(--text-color-secondary)' }}
-            ></i>
-            <p>Henüz hiç kayıt bulunmuyor.</p>
-            <Button
-              label="Yeni Bina Ekle"
-              icon="pi pi-plus"
-              onClick={() => {
-                setSelectedTask(null);
-                setFormVisible(true);
-              }}
-            />
-          </div>
-        ) : (
-          <Tree
-            value={nodes}
-            className="structure-tree"
-            selectionMode="single"
-            onExpand={handleNodeSelect}
-            loading={loading}
-            expandedKeys={{}}
-            filter
-            filterMode="strict"
-            filterPlaceholder="Yapıları ara..."
-          />
-        )}
-      </div>
-
+    <div className="card flex justify-content-center">
+      <Button
+        label="Yeni Task Ekle"
+        icon="pi pi-plus"
+        onClick={() => {
+          setSelectedTask(null);
+          setFormVisible(true);
+        }}
+      />
       <StructureForm
         task={selectedTask}
         visible={formVisible}
@@ -278,13 +215,14 @@ export default function StructureTreeList() {
         onTaskSaved={() => {
           setFormVisible(false);
           fetchTasks();
-          toast.current.show({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Kayıt işlemi tamamlandı',
-            life: 3000,
-          });
         }}
+      />
+      <Tree
+        value={nodes}
+        className="w-full md:w-30rem"
+        selectionMode="single"
+        onExpand={handleNodeSelect}
+        loading={loading}
       />
     </div>
   );
