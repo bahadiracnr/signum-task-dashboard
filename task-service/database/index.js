@@ -3,7 +3,6 @@ const neo4j = require('neo4j-driver');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Kilidi silmek için fonksiyon
 async function clearLock() {
   console.log('\x1b[36m', 'Connecting to Neo4j to clear lock...', '\x1b[0m');
   const driver = neo4j.driver(
@@ -23,7 +22,6 @@ async function clearLock() {
   }
 }
 
-// ESAS FONKSİYON
 async function executeMigration(tryCount = 1) {
   const commandToRun = `cd ./database && ./bin/neo4j-migrations --schema-database ${process.env.NEO4J_DATABASE} --database ${process.env.NEO4J_DATABASE} -a${process.env.NEO4J_SCHEME}://${process.env.NEO4J_HOST}:${process.env.NEO4J_PORT} -u${process.env.NEO4J_USERNAME} -p'${process.env.NEO4J_PASSWORD}' apply`;
   return new Promise((resolve, reject) => {
@@ -36,10 +34,9 @@ async function executeMigration(tryCount = 1) {
             `Trying to clear lock and re-run migration`,
             '\x1b[0m',
           );
-          // Kilidi temizle
           try {
             await clearLock();
-            // Temizledikten sonra tekrar çağır
+
             await executeMigration(tryCount - 1);
             resolve();
           } catch (err) {

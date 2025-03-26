@@ -43,7 +43,6 @@
   overflow-x: auto;
 }
 
-/* Node styling */
 .nodeContainer {
   width: 100%;
   overflow: hidden;
@@ -186,7 +185,6 @@
   background-color: var(--red-50) !important;
 }
 
-/* Loading state */
 .loadingContainer {
   display: flex;
   flex-direction: column;
@@ -201,7 +199,6 @@
   color: var(--text-color-secondary);
 }
 
-/* Empty state */
 .emptyContainer {
   display: flex;
   flex-direction: column;
@@ -224,7 +221,6 @@
   max-width: 300px;
 }
 
-/* PrimeReact customizations */
 .treeList :global(.p-tree) {
   border: none !important;
   background: transparent !important;
@@ -257,7 +253,6 @@
   margin-bottom: 0.25rem !important;
 }
 
-/* Responsive */
 @media screen and (max-width: 768px) {
   .treeHeader {
     flex-direction: column;

@@ -38,7 +38,6 @@
   display: none;
 }
 
-/* Logo and brand style */
 .navbarBrand {
   display: flex;
   align-items: center;
@@ -58,7 +57,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Right side search and user profile */
 .navbarEnd {
   display: flex;
   align-items: center;
@@ -95,7 +93,6 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* User profile */
 .userProfile {
   display: flex;
   align-items: center;
@@ -147,7 +144,6 @@
   color: white;
 }
 
-/* Search icon specific styling */
 .searchBox :global(.pi-search) {
   position: absolute;
   left: 0.75rem;

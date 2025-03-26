@@ -31,7 +31,6 @@ export class TaskService implements OnModuleInit {
     await this.producer.connect();
   }
 
-  // Kafka log gönderici
   private async sendToKafka(action: string, data: Record<string, any>) {
     await this.producer.send({
       topic: 'logs',
@@ -39,7 +38,6 @@ export class TaskService implements OnModuleInit {
     });
   }
 
-  // Yeni task oluştur
   async createTask(data: Record<string, any>): Promise<Task> {
     const queryGetLastNo = `
       MATCH (t:tasks)
@@ -68,12 +66,11 @@ export class TaskService implements OnModuleInit {
     const properties = node.properties;
 
     await this.sendToKafka('create', properties);
-    await this.taskGateway.emitTasks(); // 📡 WebSocket yayını
+    await this.taskGateway.emitTasks();
 
     return properties;
   }
 
-  // Task güncelle
   async updateTask(id: string, data: Record<string, any>) {
     const query = `
       MATCH (t:tasks) 
@@ -97,12 +94,11 @@ export class TaskService implements OnModuleInit {
     };
 
     await this.sendToKafka('update', { id: numericId, ...data });
-    await this.taskGateway.emitTasks(); // 📡 WebSocket yayını
+    await this.taskGateway.emitTasks();
 
     return node.properties;
   }
 
-  // Tüm task'ları getir
   async getAllTask(): Promise<Task[]> {
     const query = `
       MATCH (t:tasks)
@@ -117,7 +113,6 @@ export class TaskService implements OnModuleInit {
     });
   }
 
-  // Task sil
   async deleteTask(id: string) {
     const query = `
       MATCH (t:tasks) 
@@ -131,7 +126,7 @@ export class TaskService implements OnModuleInit {
       await this.neo4jService.write(query, { id: numericId });
 
       await this.sendToKafka('delete', { id: numericId });
-      await this.taskGateway.emitTasks(); // 📡 WebSocket yayını
+      await this.taskGateway.emitTasks();
 
       return { message: 'Task deleted successfully' };
     } catch (error) {

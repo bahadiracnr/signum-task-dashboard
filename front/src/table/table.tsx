@@ -1,4 +1,3 @@
-// src/table/table.tsx
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';

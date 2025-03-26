@@ -127,7 +127,7 @@ RETURN t
       no: newNo,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       coname: data.coname,
-      id: parseInt(id, 10), // Artık data.id yerine doğrudan parametre olarak alınıyor
+      id: parseInt(id, 10), 
     });
 
     if (!result.records.length) {
@@ -167,11 +167,11 @@ RETURN t
 
       return result.records.map((record) => {
         const node = record.get('b') as { properties: Structure };
-        const buildId = record.get('buildId').low; // sadece 'low' kısmını alıyoruz
+        const buildId = record.get('buildId').low;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const hasFloor = record.get('hasFloor');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        return { ...node.properties, id: buildId, hasFloor }; // 'id' olarak 'low' kısmını döndürüyoruz
+        return { ...node.properties, id: buildId, hasFloor };
       });
     } catch (error) {
       console.error('Error occurred while fetching builds:', error);
@@ -188,15 +188,15 @@ RETURN t
         OPTIONAL MATCH (b)-[:HAS_SPACE]->(f:Space)
         RETURN DISTINCT b, ID(b) AS FloorId, CASE WHEN f IS NOT NULL THEN true ELSE false END AS hasSpace
       `;
-      const result = await this.neo4jService.read(query, { id: Number(id) }); // id'yi sayısal formata çevir
+      const result = await this.neo4jService.read(query, { id: Number(id) });
 
       if (!result || !result.records || result.records.length === 0) {
         throw new Error('No results found');
       }
 
       return result.records.map((record) => {
-        const node = record.get('b') as { properties: Structure }; // 'b' doğru node ismi
-        const buildId = record.get('FloorId').low; // sadece 'low' kısmını alıyoruz
+        const node = record.get('b') as { properties: Structure };
+        const buildId = record.get('FloorId').low;
         const hasSpace = record.get('hasSpace');
         return { ...node.properties, id: buildId, hasSpace };
       });

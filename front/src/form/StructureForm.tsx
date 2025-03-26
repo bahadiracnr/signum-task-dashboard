@@ -107,7 +107,7 @@ export default function Form({
       contentStyle={{ padding: 0, borderRadius: '12px', overflow: 'hidden' }}
       onHide={onHide}
       breakpoints={{ '960px': '95vw' }}
-      footer={null} // Footer'ı kaldırdık, kendimiz ekleyeceğiz
+      footer={null}
       draggable={false}
       resizable={false}
       className="p-fluid"
@@ -144,7 +144,6 @@ export default function Form({
           </form>
         </div>
 
-        {/* Custom footer - card içinde kalacak */}
         <div className={styles.formFooter}>
           <button
             type="button"

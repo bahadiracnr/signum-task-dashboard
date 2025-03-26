@@ -27,7 +27,6 @@
   background-color: #f9fafb;
 }
 
-/* Buton Stilleri */
 .formButton {
   transition: all 0.3s ease;
   background: linear-gradient(135deg, var(--primary-color), var(--primary-700));
@@ -67,7 +66,6 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Form Input Stilleri */
 .formGroup {
   margin-bottom: 1.2rem;
 }

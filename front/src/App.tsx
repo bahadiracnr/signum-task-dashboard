@@ -19,7 +19,6 @@ const RouteBased = () => {
 
   return (
     <div className={styles.layoutWrapper}>
-      {/* Sidebar */}
       <div className={styles.sidebar}>
         <div className={styles.sidebarInner}>
           <div className="mb-4">
@@ -69,7 +68,6 @@ const RouteBased = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className={styles.mainContent}>
         <div className={styles.mainContentInner}>
           <Routes>

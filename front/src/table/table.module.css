@@ -1,7 +1,7 @@
 .tableContainer {
   width: 100%;
-  max-width: 100%; /* Bu zaten tamam */
-  padding-right: 0; /* Ekstra boşluk bırakma */
+  max-width: 100%;
+  padding-right: 0;
 }
 
 .headerSection {
@@ -15,19 +15,19 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 0.75rem; /* Reduced gap to maximize space */
+  gap: 0.75rem;
   width: 100%;
   max-width: 100%;
-  overflow-x: auto; /* Enable horizontal scroll if needed */
+  overflow-x: auto;
 }
 
 .headerSection {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem; /* Reduced margin */
+  margin-bottom: 0.75rem;
   width: 100%;
-  padding: 0 0.25rem; /* Small padding for breathing room */
+  padding: 0 0.25rem;
 }
 
 .headerSection h2 {
@@ -41,13 +41,13 @@
   background-color: var(--surface-card);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  padding: 0.5rem; /* Reduced padding */
+  padding: 0.5rem;
   flex: 1;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-width: 100%; /* Ensure minimum width */
+  min-width: 100%;
 }
 
 .loadingContainer {
@@ -71,7 +71,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 0.75rem; /* Reduced margin */
+  margin-bottom: 0.75rem;
   width: 100%;
 }
 
@@ -81,7 +81,6 @@
   gap: 0.5rem;
 }
 
-/* Responsive button styling */
 @media screen and (max-width: 768px) {
   .actionButtons {
     flex-direction: column;
@@ -94,7 +93,6 @@
   }
 }
 
-/* Empty table message */
 .emptyMessage {
   display: flex;
   flex-direction: column;
@@ -154,7 +152,6 @@
   gap: 0.5rem;
 }
 
-/* Responsive button styling */
 @media screen and (max-width: 768px) {
   .actionButtons {
     flex-direction: column;
@@ -167,7 +164,6 @@
   }
 }
 
-/* Empty table message */
 .emptyMessage {
   display: flex;
   flex-direction: column;
@@ -184,7 +180,6 @@
   margin-bottom: 1rem;
 }
 
-/* DataTable customizations */
 .taskTable {
   width: 100%;
 }
@@ -240,7 +235,6 @@
   color: var(--primary-color);
 }
 
-/* Modify the tag styling to make status boxes larger */
 .taskTable :global(.p-datatable-tbody > tr > td .p-tag) {
   font-weight: 500;
   font-size: 0.85rem;
@@ -256,7 +250,6 @@
   line-height: 1.4;
 }
 
-/* Search icon styling */
 .searchBox {
   position: relative;
 }
@@ -265,7 +258,6 @@
   color: var(--text-color-secondary);
 }
 
-/* Add New Task Button */
 .addButton {
   background: var(--primary-color);
   color: white;
