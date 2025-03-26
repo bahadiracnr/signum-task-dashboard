@@ -1,3 +1,4 @@
+// src/table/table.tsx
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
@@ -61,29 +62,27 @@ export default function Table() {
     }
   };
 
-  const getSeverity = (status: string) => {
+  const getStatusClass = (status: string) => {
     switch (status?.toLowerCase()) {
+      case 'done':
       case 'completed':
       case 'tamamlandı':
-        return 'success';
-      case 'in progress':
-      case 'devam ediyor':
-        return 'info';
+        return styles.statusDone;
+      case 'to do':
       case 'pending':
       case 'beklemede':
-        return 'warning';
-      case 'cancelled':
-      case 'iptal':
-        return 'danger';
+        return styles.statusTodo;
+      case 'in progress':
+      case 'devam ediyor':
+        return styles.statusInProgress;
       default:
-        return null;
+        return '';
     }
   };
 
   const statusBodyTemplate = (rowData: any) => {
-    return (
-      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
-    );
+    const className = getStatusClass(rowData.status);
+    return <Tag value={rowData.status} className={className} />;
   };
 
   const actionBodyTemplate = (rowData: any) => {
