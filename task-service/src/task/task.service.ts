@@ -1,8 +1,15 @@
-import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { Task } from './task.entity';
 import { Neo4jService } from 'nest-neo4j/dist';
 import { Kafka, Producer } from 'kafkajs';
 import { TaskStatus } from '../enums/TaskStatus';
+import { TaskGateway } from './task.gateway';
 
 @Injectable()
 export class TaskService implements OnModuleInit {
@@ -12,12 +19,19 @@ export class TaskService implements OnModuleInit {
   });
 
   private producer: Producer;
-  constructor(private readonly neo4jService: Neo4jService) {}
+
+  constructor(
+    private readonly neo4jService: Neo4jService,
+    @Inject(forwardRef(() => TaskGateway))
+    private readonly taskGateway: TaskGateway,
+  ) {}
+
   async onModuleInit() {
     this.producer = this.kafka.producer();
     await this.producer.connect();
   }
 
+  // Kafka log gönderici
   private async sendToKafka(action: string, data: Record<string, any>) {
     await this.producer.send({
       topic: 'logs',
@@ -25,13 +39,13 @@ export class TaskService implements OnModuleInit {
     });
   }
 
+  // Yeni task oluştur
   async createTask(data: Record<string, any>): Promise<Task> {
     const queryGetLastNo = `
-  MATCH (t:tasks)
-  RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
-      `;
+      MATCH (t:tasks)
+      RETURN MAX(toInteger(SUBSTRING(t.no, 2))) AS lastNo
+    `;
     const resultLastNo = await this.neo4jService.read(queryGetLastNo);
-
     const lastNo = resultLastNo.records[0].get('lastNo');
     const newNo = `T${(Number(lastNo || 0) + 1).toString().padStart(4, '0')}`;
 
@@ -44,27 +58,30 @@ export class TaskService implements OnModuleInit {
       CREATE (t:tasks {no: $no, location: $location, status: $status, name: $name, description: $description})
       CREATE (s)-[:HAS_TASKS]->(t) 
       RETURN t
-      `;
+    `;
 
     data.no = newNo;
     data.status = TaskStatus[data.status as keyof typeof TaskStatus];
 
     const result = await this.neo4jService.write(queryCreateTask, data);
-
     const node = result.records[0].get('t') as { properties: Task };
     const properties = node.properties;
+
     await this.sendToKafka('create', properties);
+    await this.taskGateway.emitTasks(); // 📡 WebSocket yayını
 
     return properties;
   }
 
+  // Task güncelle
   async updateTask(id: string, data: Record<string, any>) {
     const query = `
-         MATCH (t:tasks) 
+      MATCH (t:tasks) 
       WHERE id(t) = $id 
-        SET t += $data
-        RETURN t
+      SET t += $data
+      RETURN t
     `;
+
     const numericId = parseInt(id, 10);
     const result = await this.neo4jService.write(query, {
       id: numericId,
@@ -80,13 +97,16 @@ export class TaskService implements OnModuleInit {
     };
 
     await this.sendToKafka('update', { id: numericId, ...data });
+    await this.taskGateway.emitTasks(); // 📡 WebSocket yayını
+
     return node.properties;
   }
 
+  // Tüm task'ları getir
   async getAllTask(): Promise<Task[]> {
     const query = `
-        MATCH (t:tasks)
-        RETURN t, ID(t) AS taskId
+      MATCH (t:tasks)
+      RETURN t, ID(t) AS taskId
     `;
     const result = await this.neo4jService.read(query);
 
@@ -97,6 +117,7 @@ export class TaskService implements OnModuleInit {
     });
   }
 
+  // Task sil
   async deleteTask(id: string) {
     const query = `
       MATCH (t:tasks) 
@@ -110,6 +131,7 @@ export class TaskService implements OnModuleInit {
       await this.neo4jService.write(query, { id: numericId });
 
       await this.sendToKafka('delete', { id: numericId });
+      await this.taskGateway.emitTasks(); // 📡 WebSocket yayını
 
       return { message: 'Task deleted successfully' };
     } catch (error) {

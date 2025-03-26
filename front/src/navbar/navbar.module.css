@@ -1,11 +1,11 @@
-.navbar-wrapper {
+.navbarWrapper {
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-.main-navbar {
+.mainNavbar {
   background: linear-gradient(
     135deg,
     var(--primary-color),
@@ -15,89 +15,99 @@
   border-radius: 0 !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 0.75rem 1rem !important;
+  display: flex;
+  justify-content: space-between !important;
+  align-items: center;
 }
 
-.main-navbar .p-menuitem-link {
+.mainNavbar :global(.p-menuitem-link) {
   padding: 0.75rem 1rem !important;
 }
 
-.main-navbar .p-menuitem-text,
-.main-navbar .p-menuitem-icon {
+.mainNavbar :global(.p-menuitem-text),
+.mainNavbar :global(.p-menuitem-icon) {
   color: white !important;
 }
 
-.main-navbar .p-menuitem-link:hover {
+.mainNavbar :global(.p-menuitem-link:hover) {
   background-color: rgba(255, 255, 255, 0.1) !important;
   border-radius: 6px;
 }
 
-/* Logo ve marka stili */
-.navbar-brand {
+.mainNavbar :global(.p-menubar-root-list) {
+  display: none;
+}
+
+/* Logo and brand style */
+.navbarBrand {
   display: flex;
   align-items: center;
   margin-right: 2rem;
 }
 
-.brand-icon {
+.brandIcon {
   font-size: 1.75rem;
   color: white;
   margin-right: 0.5rem;
 }
 
-.brand-name {
+.brandName {
   font-size: 1.25rem;
   font-weight: bold;
   color: white;
   letter-spacing: 0.5px;
 }
 
-/* Sağ taraftaki arama alanı ve kullanıcı profili */
-.navbar-end {
+/* Right side search and user profile */
+.navbarEnd {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-left: auto;
 }
 
-.search-box {
+.searchBox {
   position: relative;
 }
 
-.search-box .p-inputtext {
+.searchBox :global(.p-inputtext) {
   background-color: rgba(255, 255, 255, 0.2);
   border: none;
   border-radius: 20px;
   color: white;
   padding-left: 2.5rem;
-  width: 200px;
+  width: 300px;
+  height: 40px;
+  font-size: 1rem;
   transition: all 0.3s ease;
 }
 
-.search-box .p-inputtext::placeholder {
+.searchBox :global(.p-inputtext::placeholder) {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.search-box .p-inputtext:focus {
+.searchBox :global(.p-inputtext:focus) {
   background-color: rgba(255, 255, 255, 0.3);
   width: 250px;
 }
 
-.search-box i {
+.searchBox i {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Kullanıcı profili */
-.user-profile {
+/* User profile */
+.userProfile {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.notification-badge {
+.notificationBadge {
   position: relative;
   cursor: pointer;
 }
 
-.notification-badge i {
+.notificationBadge i {
   color: white;
   font-size: 1.25rem;
 }
@@ -137,34 +147,13 @@
   color: white;
 }
 
-/* Responsive Tasarım */
-@media screen and (max-width: 768px) {
-  .search-box {
-    display: none;
-  }
-
-  .brand-name {
-    display: none;
-  }
-
-  .navbar-brand {
-    margin-right: 0.5rem;
-  }
-}
-
-/* Alt menü stilleri */
-.p-menubar .p-submenu-list {
-  border-radius: 8px !important;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
-  padding: 0.5rem !important;
-}
-
-.p-menubar .p-submenu-list .p-menuitem-text,
-.p-menubar .p-submenu-list .p-menuitem-icon {
-  color: var(--text-color) !important;
-}
-
-.p-menubar .p-submenu-list .p-menuitem-link:hover {
-  background-color: var(--surface-100) !important;
-  border-radius: 6px !important;
+/* Search icon specific styling */
+.searchBox :global(.pi-search) {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  z-index: 1;
 }

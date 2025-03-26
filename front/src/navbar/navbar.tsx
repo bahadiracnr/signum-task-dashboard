@@ -1,27 +1,27 @@
 import { Menubar } from 'primereact/menubar';
 import { InputText } from 'primereact/inputtext';
-import './navbar.css';
+import styles from './navbar.module.css';
 
 export default function Navbar() {
   const start = (
-    <div className="navbar-brand">
-      <i className="pi pi-prime brand-icon"></i>
-      <span className="brand-name">Signum</span>
+    <div className={styles.navbarBrand}>
+      <i className={`pi pi-prime ${styles.brandIcon}`}></i>
+      <span className={styles.brandName}>Signum</span>
     </div>
   );
 
   const end = (
-    <div className="navbar-end">
-      <span className="p-input-icon-left search-box">
+    <div className={styles.navbarEnd}>
+      <span className={`p-input-icon-left ${styles.searchBox}`}>
         <i className="pi pi-search" />
         <InputText placeholder="Ara..." />
       </span>
-      <div className="user-profile">
-        <span className="notification-badge">
+      <div className={styles.userProfile}>
+        <span className={styles.notificationBadge}>
           <i className="pi pi-bell"></i>
-          <span className="badge">3</span>
+          <span className={styles.badge}>3</span>
         </span>
-        <div className="avatar">
+        <div className={styles.avatar}>
           <i className="pi pi-user"></i>
         </div>
       </div>
@@ -29,8 +29,8 @@ export default function Navbar() {
   );
 
   return (
-    <div className="navbar-wrapper">
-      <Menubar start={start} end={end} className="main-navbar" />
+    <div className={styles.navbarWrapper}>
+      <Menubar start={start} end={end} className={styles.mainNavbar} />
     </div>
   );
 }

@@ -3,24 +3,17 @@ import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
-import { FilterMatchMode } from 'primereact/api';
 import { Tag } from 'primereact/tag';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import Form from '../form/Form';
-import './table.css';
+import styles from './table.module.css';
 
 export default function Table() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
   const [formVisible, setFormVisible] = useState(false);
-  const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
-  });
-  const [globalFilterValue, setGlobalFilterValue] = useState('');
   const toast = useRef<any>(null);
 
   const fetchTasks = () => {
@@ -68,14 +61,6 @@ export default function Table() {
     }
   };
 
-  const onGlobalFilterChange = (e: any) => {
-    const value = e.target.value;
-    const _filters = { ...filters };
-    _filters['global'].value = value;
-    setFilters(_filters);
-    setGlobalFilterValue(value);
-  };
-
   const getSeverity = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'completed':
@@ -103,7 +88,7 @@ export default function Table() {
 
   const actionBodyTemplate = (rowData: any) => {
     return (
-      <div className="action-buttons">
+      <div className={styles.actionButtons}>
         <Button
           icon="pi pi-pencil"
           className="p-button-rounded p-button-warning p-button-text"
@@ -125,38 +110,23 @@ export default function Table() {
     );
   };
 
-  const header = (
-    <div className="table-header">
-      <div className="flex justify-content-end">
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" />
-          <InputText
-            value={globalFilterValue}
-            onChange={onGlobalFilterChange}
-            placeholder="Ara..."
-          />
-        </span>
-      </div>
-    </div>
-  );
-
   const emptyMessage = (
-    <div className="empty-message">
-      <i className="pi pi-info-circle empty-icon"></i>
+    <div className={styles.emptyMessage}>
+      <i className={`pi pi-info-circle ${styles.emptyIcon}`}></i>
       <p>Görüntülenecek veri bulunamadı</p>
     </div>
   );
 
   return (
-    <div className="task-table-container">
+    <div className={styles.taskTableContainer}>
       <Toast ref={toast} />
 
-      <div className="header-section">
+      <div className={styles.headerSection}>
         <h2>Task Listesi</h2>
         <Button
           label="Yeni Task Ekle"
           icon="pi pi-plus"
-          className="p-button-raised"
+          className={styles.addButton}
           onClick={() => {
             setSelectedTask(null);
             setFormVisible(true);
@@ -165,7 +135,7 @@ export default function Table() {
       </div>
 
       {loading ? (
-        <div className="loading-container">
+        <div className={styles.loadingContainer}>
           <ProgressSpinner
             style={{ width: '50px', height: '50px' }}
             strokeWidth="4"
@@ -173,60 +143,31 @@ export default function Table() {
           <p>Veriler yükleniyor...</p>
         </div>
       ) : (
-        <div className="table-container">
+        <div className={styles.tableContainer}>
           <DataTable
             value={data}
             paginator
             rows={10}
-            rowsPerPageOptions={[5, 10, 25, 50]}
             dataKey="id"
-            filters={filters}
-            filterDisplay="menu"
             loading={loading}
             responsiveLayout="scroll"
             emptyMessage={emptyMessage}
-            header={header}
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Toplam {totalRecords} kayıttan {first} - {last} arası gösteriliyor"
             stripedRows
             showGridlines
-            className="task-table"
+            className={styles.taskTable}
           >
-            <Column
-              field="no"
-              header="Task No"
-              sortable
-              filter
-              style={{ width: '10%' }}
-            />
+            <Column field="no" header="Task No" style={{ width: '10%' }} />
             <Column
               field="status"
               header="Durum"
               body={statusBodyTemplate}
-              sortable
-              filter
-              filterPlaceholder="Duruma göre filtrele"
               style={{ width: '15%' }}
             />
-            <Column
-              field="name"
-              header="İsim"
-              sortable
-              filter
-              style={{ width: '20%' }}
-            />
-            <Column
-              field="location"
-              header="Konum"
-              sortable
-              filter
-              style={{ width: '15%' }}
-            />
+            <Column field="name" header="İsim" style={{ width: '20%' }} />
+            <Column field="location" header="Konum" style={{ width: '15%' }} />
             <Column
               field="description"
               header="Açıklama"
-              sortable
-              filter
               style={{ width: '30%' }}
             />
             <Column

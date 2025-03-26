@@ -1,0 +1,300 @@
+.tableContainer {
+  width: 100%;
+  max-width: 100%; /* Bu zaten tamam */
+  padding-right: 0; /* Ekstra boşluk bırakma */
+}
+
+.headerSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+.taskTableContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0.75rem; /* Reduced gap to maximize space */
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto; /* Enable horizontal scroll if needed */
+}
+
+.headerSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem; /* Reduced margin */
+  width: 100%;
+  padding: 0 0.25rem; /* Small padding for breathing room */
+}
+
+.headerSection h2 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.tableContainer {
+  background-color: var(--surface-card);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem; /* Reduced padding */
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 100%; /* Ensure minimum width */
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: var(--surface-card);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.loadingContainer p {
+  margin-top: 1rem;
+  color: var(--text-color-secondary);
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0.75rem; /* Reduced margin */
+  width: 100%;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Responsive button styling */
+@media screen and (max-width: 768px) {
+  .actionButtons {
+    flex-direction: column;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+/* Empty table message */
+.emptyMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  width: 100%;
+}
+.headerSection h2 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.tableContainer {
+  background-color: var(--surface-card);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: var(--surface-card);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.loadingContainer p {
+  margin-top: 1rem;
+  color: var(--text-color-secondary);
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Responsive button styling */
+@media screen and (max-width: 768px) {
+  .actionButtons {
+    flex-direction: column;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+/* Empty table message */
+.emptyMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  width: 100%;
+}
+
+.emptyIcon {
+  font-size: 2rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 1rem;
+}
+
+/* DataTable customizations */
+.taskTable {
+  width: 100%;
+}
+
+.taskTable :global(.p-datatable-wrapper) {
+  width: 100%;
+}
+
+.taskTable :global(.p-paginator) {
+  border-radius: 0 0 6px 6px;
+  padding: 0.75rem;
+  width: 100%;
+}
+
+.taskTable :global(.p-datatable-header) {
+  border-radius: 6px 6px 0 0;
+  padding: 1rem;
+  width: 100%;
+}
+
+.taskTable :global(.p-datatable-thead > tr > th) {
+  background-color: var(--surface-section);
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: right;
+}
+
+.taskTable :global(.p-datatable-thead > tr > th:first-child) {
+  text-align: left;
+}
+
+.taskTable :global(.p-datatable-tbody > tr > td) {
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.taskTable :global(.p-datatable-tbody > tr > td:first-child) {
+  text-align: left;
+}
+
+.taskTable :global(.p-datatable-tbody > tr:hover) {
+  background-color: var(--surface-hover);
+}
+
+.taskTable :global(.p-column-filter-menu-button) {
+  width: 2rem;
+  height: 2rem;
+}
+
+.taskTable :global(.p-column-filter-menu-button:hover) {
+  background-color: var(--surface-200);
+  color: var(--primary-color);
+}
+
+/* Modify the tag styling to make status boxes larger */
+.taskTable :global(.p-datatable-tbody > tr > td .p-tag) {
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  min-width: 80px;
+  text-align: center;
+  display: inline-block;
+  margin-left: auto;
+}
+
+.taskTable :global(.p-tag .p-tag-value) {
+  line-height: 1.4;
+}
+
+/* Search icon styling */
+.searchBox {
+  position: relative;
+}
+
+.searchBox :global(i.pi-search) {
+  color: var(--text-color-secondary);
+}
+
+/* Add New Task Button */
+.addButton {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.addButton:hover {
+  background: var(--primary-600);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.addButton:focus {
+  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.addButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.addButton i {
+  font-size: 0.9rem;
+}
