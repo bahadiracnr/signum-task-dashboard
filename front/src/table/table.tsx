@@ -68,11 +68,11 @@ export default function Table() {
       case 'completed':
       case 'tamamlandı':
         return styles.statusDone;
-      case 'to do':
+      case 'todo':
       case 'pending':
       case 'beklemede':
         return styles.statusTodo;
-      case 'in progress':
+      case 'in_progress':
       case 'devam ediyor':
         return styles.statusInProgress;
       default:

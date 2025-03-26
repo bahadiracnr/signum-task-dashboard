@@ -5,7 +5,7 @@ export interface KanbanCardType {
   name: string;
   description: string;
   location: string;
-  status: 'To Do' | 'In Progress' | 'Done' | string;
+  status: 'TODO' | 'IN_PROGRESS' | 'DONE' | string;
 }
 
 export interface ColumnType {

@@ -19,17 +19,9 @@ export function KanbanCard({ card, index }: KanbanCardProps) {
     <Draggable draggableId={String(card.id)} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
         const isDragging = snapshot.isDragging;
-        const transform = provided.draggableProps.style?.transform;
 
-        const style: React.CSSProperties = {
-          ...provided.draggableProps.style,
-          cursor: isDragging ? 'grabbing' : 'grab',
-          ...(isDragging && transform
-            ? {
-                transform,
-                pointerEvents: 'none' as const,
-              }
-            : {}),
+        const style = {
+          transform: provided.draggableProps.style?.transform,
         };
 
         return (

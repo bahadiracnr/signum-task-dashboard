@@ -129,13 +129,13 @@ export function KanbanBoard() {
 // Kolonlara ayır
 function groupTasksToColumns(tasks: KanbanCardType[]): ColumnType[] {
   const columns: Record<string, ColumnType> = {
-    'To Do': { id: 'column-1', title: 'To Do', cards: [] },
-    'In Progress': { id: 'column-2', title: 'In Progress', cards: [] },
-    Done: { id: 'column-3', title: 'Done', cards: [] },
+    TODO: { id: 'column-1', title: 'TODO', cards: [] },
+    IN_PROGRESS: { id: 'column-2', title: 'IN_PROGRESS', cards: [] },
+    DONE: { id: 'column-3', title: 'DONE', cards: [] },
   };
 
   tasks.forEach((task) => {
-    const column = columns[task.status] || columns['To Do'];
+    const column = columns[task.status] || columns['TODO'];
     column.cards.push(task);
   });
 
