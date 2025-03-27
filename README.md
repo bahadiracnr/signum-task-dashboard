@@ -85,42 +85,42 @@ Aşağıdaki servislerin makinenizde kurulu ve çalışıyor olması gerekir:
 # 🚀 Signum Task Dashboard Kurulum ve Çalıştırma
 
 # 1. Reponun klonlanması
-git clone https://github.com/kullaniciadi/signum-task-dashboard.git
-cd signum-task-dashboard
+& git clone https://github.com/kullaniciadi/signum-task-dashboard.git
+& cd signum-task-dashboard
 
 # 2. Status Service kurulumu ve başlatılması
-cd status-service
-npm install
-npm run start:dev
+& cd status-service
+& npm install
+& npm run start:dev
 
 # 3. Yeni bir terminal aç, Task Service için:
-cd task-service
-npm install
-npm run start:dev
+& cd task-service
+& & npm install
+& & npm run start:dev
 
 # 4. Yeni bir terminal aç, Log Service için:
-cd log-service
-npm install
-npm run start:dev
+& cd log-service
+& npm install
+& npm run start:dev
 
 # 5. Yeni bir terminal aç, Frontend için:
-cd frontend
-npm install
-npm run dev
+& cd frontend
+& npm install
+& npm run dev
 
 # Notlar:
-# - Kafka, MongoDB ve Neo4j servislerinin kurulu ve çalışır durumda olması gerekmektedir.
-# - .env dosyalarının her serviste uygun şekilde ayarlanmış olması gerekir.
-# - Docker kullanılmak istenirse servisler kolayca container haline getirilebilir.
+- Kafka, MongoDB ve Neo4j servislerinin kurulu ve çalışır durumda olması gerekmektedir.
+- .env dosyalarının her serviste uygun şekilde ayarlanmış olması gerekir.
+- Docker kullanılmak istenirse servisler kolayca container haline getirilebilir.
 
 # 🤝 Katkı Sağlamak
-# Bu projeye katkıda bulunmak istersen:
-# 1. Fork'la
-# 2. Yeni bir branch oluştur: git checkout -b feature/yenilik
-# 3. Geliştirmeleri yap ve commit et
-# 4. Branch’i pushla: git push origin feature/yenilik
-# 5. Pull Request gönder
+Bu projeye katkıda bulunmak istersen:
+1. Fork'la
+2. Yeni bir branch oluştur: git checkout -b feature/yenilik
+3. Geliştirmeleri yap ve commit et
+4. Branch’i pushla: git push origin feature/yenilik
+5. Pull Request gönder
 
 # 🙌 Teşekkürler
-# Projeyi incelediğiniz, katkıda bulunduğunuz veya kullandığınız için teşekkür ederiz.
-# Geliştirmelere destek olmak isterseniz, issue açabilir veya direkt iletişime geçebilirsiniz.
+Projeyi incelediğiniz, katkıda bulunduğunuz veya kullandığınız için teşekkür ederiz.
+Geliştirmelere destek olmak isterseniz, issue açabilir veya direkt iletişime geçebilirsiniz.
