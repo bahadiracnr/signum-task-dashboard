@@ -93,7 +93,7 @@ body {
 
 .kanban-card.dragging {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  position: fixed !important; /* This is the key change */
+  position: fixed !important;
   z-index: 9999;
   transform: rotate(3deg) scale(1.02);
   opacity: 0.9;
