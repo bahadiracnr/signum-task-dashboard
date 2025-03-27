@@ -5,7 +5,6 @@ import { KanbanCard } from './kanban-card';
 import { Card } from 'primereact/card';
 import { ColumnType, KanbanCardType } from '../types';
 import { socket } from '../../socket';
-import axios from 'axios';
 import '../index.css';
 
 export function KanbanBoard() {
@@ -68,13 +67,17 @@ export function KanbanBoard() {
     setColumns(updatedColumns);
 
     try {
-      await axios.put(`http://localhost:5005/task/${movedCard.id}`, {
+      await socket.emit('updateTask', {
+        id: movedCard.id,
         status: destColumn.title,
       });
     } catch (err) {
       console.error('Status güncellenirken hata:', err);
     }
   };
+
+  // axios.put(`http://localhost:5005/task/${movedCard.id}`, {
+  //   status: destColumn.title,
 
   return (
     <div className="p-4 md:p-6 kanban-container">

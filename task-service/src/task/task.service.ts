@@ -72,6 +72,7 @@ export class TaskService implements OnModuleInit {
   }
 
   async updateTask(id: string, data: Record<string, any>) {
+    console.log('🟢 Updating task:', id, data);
     const query = `
       MATCH (t:tasks) 
       WHERE id(t) = $id 

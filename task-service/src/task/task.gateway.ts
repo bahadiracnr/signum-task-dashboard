@@ -5,10 +5,12 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   ConnectedSocket,
+  MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Inject, forwardRef } from '@nestjs/common';
 import { TaskService } from './task.service';
+import { subscribe } from 'diagnostics_channel';
 
 @WebSocketGateway({
   cors: {
@@ -45,5 +47,15 @@ export class TaskGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleGetTasks(@ConnectedSocket() client: Socket) {
     const tasks = await this.taskService.getAllTask();
     client.emit('tasks', tasks);
+  }
+
+  // UPDATE
+  @SubscribeMessage('updateTask')
+  async handleUpdateTask(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { id: string; status: Record<string, any> },
+  ) {
+    console.log('🟡 updateTask received:', data);
+    await this.taskService.updateTask(data.id, { status: data.status });
   }
 }
